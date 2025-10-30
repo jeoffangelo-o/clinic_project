@@ -25,18 +25,20 @@
         <?php if(!empty($patient)): ?>
 
             <?php foreach($patient as $p): ?>
-                <td><?= $p['patiend_id'] ?></td>
-                <td><?= (!empty($p['user_id'])) ? $p['user_id'] : 'Walk In'?></td>
-                <td><?= $p['last_name']  . ', ' . $p['first_name'] . ' ' . $p['middle_name'] ?></td>
-                <td><?= $p['gender'] ?></td>
-                <td><?= $p['created_at'] ?></td>
 
-                <td>
-                    <a href="#">View</a>
-                    <a href="#">Edit</a>
-                    <a href="#">Delete</a>
-                </td>
-                
+                <tr>
+                    <td><?= $p['patient_id'] ?></td>
+                    <td><?= (!empty($p['user_id'])) ? $p['user_id'] : 'Walk In'?></td>
+                    <td><?= $p['last_name']  . ', ' . $p['first_name'] . ' ' . $p['middle_name'] ?></td>
+                    <td><?= $p['gender'] ?></td>
+                    <td><?= $p['created_at'] ?></td>
+
+                    <td>
+                        <a href="#">View</a>
+                        <a href="#">Edit</a>
+                        <a href="#">Delete</a>
+                    </td>
+                </tr>
             <?php endforeach; ?>
 
         <?php else: ?>

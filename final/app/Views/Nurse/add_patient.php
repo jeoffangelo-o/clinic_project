@@ -8,6 +8,11 @@
 <body>
     <h1>Add Patient</h1>
 
+    
+    <?php if(session()->getFlashData('message')): ?>
+        <p><?= session()->getFlashData('message') ?></p>
+    <?php endif; ?>
+
     <form action="/patient/store" method="post">
         <label for="user_id">User ID: </label>
         <input type="number" name="user_id" id="" placeholder="leave blank if none"><br><br>
@@ -27,8 +32,6 @@
         <input type="date" name="birth_date" id="" required><br><br>
         <label for="">Phone Number:</label>
         <input type="text" name="contact_no"><br><br>
-        <label for="">Address:</label>
-        <input type="text" name="address"><br><br>
         <label for="">Address:</label>
         <input type="text" name="address"><br><br>
         <label for="">Blood Type:</label>
