@@ -35,9 +35,15 @@
             <button><a href="/logout">LOGOUT</a></button>
             </div>
                     <br><br><br>
+            <?php if(session()->get('role') === 'nurse' || session()->get('role') === 'admin'): ?>
+            
             <div>
-                <button><a href="#">Manage Patient</a></button>
+                <button><a href="/patient">Manage Patient</a></button>
+                <button><a href="#">Consultation</a></button>
+
             </div>
+
+            <?php endif ?>
               
         <?php endif; ?>    
 </header>
