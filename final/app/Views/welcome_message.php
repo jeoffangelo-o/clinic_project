@@ -38,7 +38,7 @@
             <div>
                 <button><a href="#">Manage Patient</a></button>
             </div>
-            
+             
         <?php endif; ?>    
 </header>
 
