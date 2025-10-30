@@ -53,6 +53,7 @@
         <label for="">Emergency Contact Number:</label>
         <input type="text" name="emergency_contact"><br><br>
         <input type="submit" value="Add Patient">
+        
     </form>
 </body>
 </html>
