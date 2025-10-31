@@ -36,7 +36,7 @@
                     <td>
                         <a href="<?= base_url('/patient/view/'.$p['patient_id'])?>">View</a>
                         <a href="<?= base_url('/patient/edit/'.$p['patient_id'])?>">Edit</a>
-                        <a href="#">Delete</a>
+                        <a href="<?= base_url('/patient/delete/'.$p['patient_id'])?>" onclick="confirm('Are you Sure to Delete Patient #<?= $p['patient_id'] ?>')">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

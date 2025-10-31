@@ -103,4 +103,13 @@ class PatientController extends BaseController
 
         return redirect()->to('/patient/edit/'.$id)->with('message', 'Patient Updated Successfully');
     }
+
+    public function delete_patient($id)
+    {
+        $patient = new PatientModel();
+        
+        $patient->delete($id);
+
+        return redirect()->to('/patient')->with('message', 'Patient # ' . $id . 'is Deleted Successfully');
+    }
 }
