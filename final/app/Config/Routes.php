@@ -32,5 +32,7 @@ $routes->get('/patient/delete/(:num)', 'PatientController::delete_patient/$1');
 
 
 $routes->get('/appointment', 'AppointmentController::appointment');
+$routes->get('/appointment/add', 'AppointmentController::add_appointment');
+$routes->post('/appointment/store', 'AppointmentController::store_appointment');
 
 

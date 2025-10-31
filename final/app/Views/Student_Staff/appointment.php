@@ -11,7 +11,7 @@
     <?php if(!session()->get('hasPatient')): ?>
         <p>You don't have patient info. <a href="/patient/add">Add</a>  to Continue</p>
     <?php else: ?>
-        
+
     <button><a href="/appointment/add">Create Appointment</a></button>
 
 
@@ -21,7 +21,7 @@
     <?php if(!empty($appoint)): ?>
 
         <?php foreach($appoint as $a): ?>
-            <div>
+            <div style="border: 1px solid black">
                 <p><strong>Appointment ID:</strong> <?= $a['appointment_id'] ?></p>
                 <p><strong>Patient ID:</strong> <?= $a['patient_id'] ?></p>
                 <p><strong>Appointment Date:</strong> <?= $a['appointment_date'] ?></p>

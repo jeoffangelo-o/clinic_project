@@ -38,6 +38,28 @@ class AppointmentController extends BaseController
     }
 
     public function add_appointment(){
-        return view('Stude')
+        return view('Student_Staff/add_appointment');
+    }
+
+    public function store_appointment()
+    {
+        $appoint = new AppointmentModel();
+        $patient = new PatientModel();
+
+        $user_id = session()->get('user_id');
+
+        $exist = $patient->where('user_id', $user_id)->first();
+
+        $data = [
+            'patient_id' => $exist['patient_id'],
+            'appointment_date' => request()->getPost('appointment_date'),
+            'purpose' => request()->getPost('purpose'),
+            'status' => 'pending',
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        $appoint->insert($data);
+
+        return redirect()->to('/appointment/add')->with('message', 'Appointment Created Successfully');
     }
 }
