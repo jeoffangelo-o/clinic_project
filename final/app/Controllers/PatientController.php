@@ -61,6 +61,14 @@ class PatientController extends BaseController
 
         $patient->insert($data);
 
-         return redirect()->to('/patient/add')->with('message', 'Patient Added Successfully');
+        return redirect()->to('/patient/add')->with('message', 'Patient Added Successfully');
+    }
+
+    public function view_patient($id){
+        $patient = new PatientModel();
+
+        $data['p'] = $patient->find($id);
+
+        return view('/Nurse/view_patient', $data);
     }
 }

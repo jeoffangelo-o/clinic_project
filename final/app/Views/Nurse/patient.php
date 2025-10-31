@@ -34,7 +34,7 @@
                     <td><?= $p['created_at'] ?></td>
 
                     <td>
-                        <a href="#">View</a>
+                        <a href="<?= base_url('/patient/view/'.$p['patient_id'])?>">View</a>
                         <a href="#">Edit</a>
                         <a href="#">Delete</a>
                     </td>

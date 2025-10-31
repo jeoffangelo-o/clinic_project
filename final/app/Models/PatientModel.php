@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class PatientModel extends Model
 {
     protected $table            = 'patients';
-    protected $primaryKey       = 'patients_id';
+    protected $primaryKey       = 'patient_id';
 
 
     protected $allowedFields    = ['user_id',
