@@ -30,14 +30,14 @@ class AppointmentController extends BaseController
             ]);
         }
 
-
-
-   
-
         $data['appoint'] = $appoint
-                            ->where('patient_id', $patient_id)
+                            ->where('patient_id', $exist['patient_id'])
                             ->findAll();
         
         return view('Student_Staff/appointment', $data);
+    }
+
+    public function add_appointment(){
+        return view('Stude')
     }
 }

@@ -1,11 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome to CodeIgniter 4!</title>
-    <meta name="description" content="The small framework with powerful features">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="/favicon.ico">
 
 <body>
 
@@ -33,7 +27,7 @@
             <?php endif; ?>
 
             <button><a href="/logout">LOGOUT</a></button>
-            </div>
+            
                     <br><br><br>
             <?php if(session()->get('role') === 'nurse' || session()->get('role') === 'admin'): ?>
             
@@ -43,12 +37,18 @@
 
             </div>
 
+            <?php endif; ?>
 
-            <?php endif ?>
+            <?php if(session()->get('role') === 'student' || session()->get('role') === 'admin' || session()->get('role') === 'staff'): ?>
+            
+            <div>
+                <button><a href="/appointment">Appointment</a></button>
+            </div>
               
-        <?php endif; ?>    
-</header>
+            <?php endif; ?>    
 
+             <?php endif; ?>    
+</div>
 
 </body>
 </html>

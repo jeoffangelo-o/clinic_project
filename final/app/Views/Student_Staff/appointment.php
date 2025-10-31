@@ -11,7 +11,7 @@
     <?php if(!session()->get('hasPatient')): ?>
         <p>You don't have patient info. <a href="/patient/add">Add</a>  to Continue</p>
     <?php else: ?>
-
+        
     <button><a href="/appointment/add">Create Appointment</a></button>
 
 
