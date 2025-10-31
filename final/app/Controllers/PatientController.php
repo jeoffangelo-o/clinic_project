@@ -71,4 +71,12 @@ class PatientController extends BaseController
 
         return view('/Nurse/view_patient', $data);
     }
+
+    public function edit_patient($id){
+        $patient = new PatientModel();
+
+        $data['p'] = $patient->find($id);
+
+        return view('/Nurse/edit_patient', $data);
+    }
 }
