@@ -21,7 +21,7 @@
         <label for="user_id">Middle Name:</label>
         <input type="text" name="middle_name" id=""><br><br>
         <label for="user_id">Last Name:</label>
-        <input type="text" name="last_name" id=""><br><br>
+        <input type="text" name="last_name" id="" required><br><br>
         <label for="">Gender:</label>
         <select name="gender" id="">
             <option value="male">Male</option>
