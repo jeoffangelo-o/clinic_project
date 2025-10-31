@@ -101,6 +101,6 @@ class PatientController extends BaseController
 
         $patient->update($id, $data);
 
-        return redirect()->to('/patient/edit')->with('message', 'Patient Updated Successfully');
+        return redirect()->to('/patient/edit/'.$id)->with('message', 'Patient Updated Successfully');
     }
 }
