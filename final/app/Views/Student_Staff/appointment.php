@@ -8,11 +8,29 @@
 <body>
     <h1>Appointment</h1>
 
+    
+
     <button><a href="/appointment/add">Create Appointment</a></button>
 
     <h3>My Appointments</h3>
 
-    <?php?>
+    <?php if(!empty($appoint)): ?>
+
+        <?php foreach($appoint as $a): ?>
+            <div>
+                <p><strong>Appointment ID:</strong> <?= $a['appointment_id'] ?></p>
+                <p><strong>Patient ID:</strong> <?= $a['patient_id'] ?></p>
+                <p><strong>Appointment Date:</strong> <?= $a['appointment_date'] ?></p>
+                <p><strong>Purpose:</strong> <?= $a['purpose'] ?></p>
+                <p><strong>Status:</strong> <?= $a['status'] ?></p>
+                <p><strong>Remarks:</strong> <?= (!empty($a['remarks'])) ? $a['remarks'] : 'None'  ?></p>
+                <p><strong>Date Created:</strong> <?= $a['created_at'] ?></p>
+            </div>
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+    <?php endif; ?>
 
 </body>
 </html>
