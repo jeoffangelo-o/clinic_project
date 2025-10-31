@@ -26,3 +26,7 @@ $routes->get('/patient/add', 'PatientController::add_patient');
 $routes->post('/patient/store', 'PatientController::store_patient');
 
 $routes->get('/patient/view/(:num)', 'PatientController::view_patient/$1');
+$routes->get('/patient/edit/(:num)', 'PatientController::edit_patient/$1');
+$routes->post('/patient/update/(:num)', 'PatientController::update_patient/$1');
+
+

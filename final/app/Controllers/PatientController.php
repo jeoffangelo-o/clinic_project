@@ -79,4 +79,28 @@ class PatientController extends BaseController
 
         return view('/Nurse/edit_patient', $data);
     }
+
+    public function update_patient($id)
+    {
+        $patient = new PatientModel();
+
+        $data = [
+            'user_id' => request()->getPost('user_id') ?: null,
+            'first_name' => request()->getPost('first_name'),
+            'middle_name' => request()->getPost('middle_name'),
+            'last_name' => request()->getPost('last_name'),
+            'gender' => request()->getPost('gender'),
+            'birth_date' => request()->getPost('birth_date'),
+            'contact_no' => request()->getPost('contact_no'),
+            'address' => request()->getPost('address'),
+            'blood_type' => request()->getPost('blood_type') ?: null,
+            'allergies' => request()->getPost('allergies') ?: null,
+            'medical_history' => request()->getPost('medical_history'),
+            'emergency_contact' => request()->getPost('emergency_contact'),
+        ];
+
+        $patient->update($id, $data);
+
+        return redirect()->to('/patient/edit')->with('message', 'Patient Updated Successfully');
+    }
 }
