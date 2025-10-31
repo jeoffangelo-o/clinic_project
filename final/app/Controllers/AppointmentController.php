@@ -15,24 +15,31 @@ class AppointmentController extends BaseController
         $appoint = new AppointmentModel;
         $patient = new PatientModel;
 
-        $user_id = session()->get('user_id');
+        if(session->get('role') === 'student' || session->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
 
-        $exist = $patient->where('user_id', $user_id)->first();
+            $exist = $patient->where('user_id', $user_id)->first();
 
-        if($exist){
-            session()->set([
-                'hasPatient' => true
-            ]);
+            if($exist){
+                session()->set([
+                    'hasPatient' => true
+                ]);
+            }
+            else{
+                session()->set([
+                    'hasPatient' => false
+                ]);
+            }
+
+            $data['appoint'] = $appoint
+                                ->where('patient_id', $exist['patient_id'])
+                                ->findAll();
         }
-        else{
-            session()->set([
-                'hasPatient' => false
-            ]);
+        else if(session->get('role') === 'nurse' || session->get('role') === 'admin' ){
+            $data['appoint'] = $appoint->orderBy('created_at', 'asc')->findAll();
         }
 
-        $data['appoint'] = $appoint
-                            ->where('patient_id', $exist['patient_id'])
-                            ->findAll();
+        
         
         return view('Student_Staff/appointment', $data);
     }
