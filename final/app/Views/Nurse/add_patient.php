@@ -14,8 +14,15 @@
     <?php endif; ?>
 
     <form action="/patient/store" method="post">
-        <label for="user_id">User ID: </label>
-        <input type="number" name="user_id" id="" placeholder="leave blank if none"><br><br>
+
+        <?php if(session()->get('role')=== 'admin' || session()->get('role')=== 'nurse' ): ?>
+            <label for="user_id">User ID: </label>
+            <input type="number" name="user_id" id="" placeholder="leave blank if none"><br><br>
+        <?php else: ?>
+            <input type="hidden" name="user_id" value="<?= session()->get('user_id') ?>">
+        <?php endif; ?>
+        
+        
         <label for="user_id">First Name:</label>
         <input type="text" name="first_name" id="" required><br><br>
         <label for="user_id">Middle Name:</label>

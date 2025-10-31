@@ -8,9 +8,13 @@
 <body>
     <h1>Appointment</h1>
 
-    
+    <?php if(!session()->get('hasPatient')): ?>
+        <p>You don't have patient info. <a href="/patient/add">Add</a>  to Continue</p>
+    <?php else: ?>
 
     <button><a href="/appointment/add">Create Appointment</a></button>
+
+
 
     <h3>My Appointments</h3>
 
@@ -31,6 +35,7 @@
     <?php else: ?>
 
     <?php endif; ?>
-
+    
+    <?php endif; ?>
 </body>
 </html>
