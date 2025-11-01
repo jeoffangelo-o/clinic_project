@@ -39,13 +39,17 @@
 
             <?php endif; ?>
 
-            <?php if(session()->get('role') === 'student' || session()->get('role') === 'admin' || session()->get('role') === 'staff'): ?>
+            
             
             <div>
-                <button><a href="/appointment">Appointment</a></button>
+                <button>
+                    <a href="/appointment<?= (session()->get('role') === 'admin' || session()->get('role') === 'nurse') ? '?status=all' : ''   ?>">
+                        Appointment
+                    </a>
+                </button>
             </div>
               
-            <?php endif; ?>    
+
 
              <?php endif; ?>    
 </div>

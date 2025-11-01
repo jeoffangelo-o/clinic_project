@@ -15,7 +15,9 @@ class AppointmentController extends BaseController
         $appoint = new AppointmentModel;
         $patient = new PatientModel;
 
-        if(session->get('role') === 'student' || session->get('role') === 'staff'){
+        
+
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
             $user_id = session()->get('user_id');
 
             $exist = $patient->where('user_id', $user_id)->first();
@@ -35,8 +37,21 @@ class AppointmentController extends BaseController
                                 ->where('patient_id', $exist['patient_id'])
                                 ->findAll();
         }
-        else if(session->get('role') === 'nurse' || session->get('role') === 'admin' ){
-            $data['appoint'] = $appoint->orderBy('created_at', 'asc')->findAll();
+        else if(session()->get('role') === 'nurse' || session()->get('role') === 'admin' ){
+            $stats = request()->getGet('status');
+
+            if($stats === 'all'){
+                $data['appoint'] = $appoint->orderBy('created_at', 'asc')->findAll();
+            }
+            else{
+                $data['appoint'] = $appoint
+                                    ->where('status', $stats)
+                                    ->orderBy('created_at', 'asc')
+                                    ->findAll();
+            }
+
+            session()->set('appointment_status', $stats);
+            
         }
 
         
@@ -68,5 +83,48 @@ class AppointmentController extends BaseController
         $appoint->insert($data);
 
         return redirect()->to('/appointment/add')->with('message', 'Appointment Created Successfully');
+    }
+
+    public function edit_appointment($id)
+    {
+        $appoint = new AppointmentModel();
+
+        $data['a'] = $appoint->find($id);
+
+        return view('Student_Staff/edit_appointment', $data);
+    }
+
+    public function update_appointment($id){
+        $appoint = new AppointmentModel();
+
+        if(session()->get('activity') === 'save'){
+
+            $data = [
+                'status' => request()->getPost('status'),
+                'remarks' => request()->getPost('remarks'),
+            ];
+
+            $appoint->update($id, $data);
+
+            return redirect()->to('/appointment')->with('message', 'Appointment Saved Successfully');
+        }
+
+        $data = [
+                'appointment_date' => request()->getPost('appointment_date'),
+                'purpose' => request()->getPost('purpose'),
+        ];
+
+        $appoint->update($id, $data);
+
+        return redirect()->to('/appointment/edit/'.$id)->with('message', 'Appointment Updated Successfully');
+    }
+
+    public function delete_appointment($id)
+    {
+        $appoint = new AppointmentModel();
+
+        $appoint->delete($id);
+
+        return redirect()->to('/appointment')->with('message', 'Appointment Deleted Successfully');
     }
 }

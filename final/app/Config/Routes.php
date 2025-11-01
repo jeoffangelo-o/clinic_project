@@ -33,6 +33,10 @@ $routes->get('/patient/delete/(:num)', 'PatientController::delete_patient/$1');
 
 $routes->get('/appointment', 'AppointmentController::appointment');
 $routes->get('/appointment/add', 'AppointmentController::add_appointment');
+$routes->get('/appointment/edit/(:num)', 'AppointmentController::edit_appointment/$1');
+$routes->get('/appointment/delete/(:num)', 'AppointmentController::delete_appointment/$1');
 $routes->post('/appointment/store', 'AppointmentController::store_appointment');
+$routes->post('/appointment/update/(:num)', 'AppointmentController::update_appointment/$1');
+
 
 

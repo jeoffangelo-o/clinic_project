@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class AppointmentModel extends Model
 {
     protected $table            = 'appointments';
-    protected $primaryKey       = 'id';
+    protected $primaryKey       = 'appointment_id';
    
     protected $allowedFields    = ['appointment_id',
                                     'patient_id',
