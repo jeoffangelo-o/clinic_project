@@ -56,11 +56,11 @@ class AppointmentController extends BaseController
 
         
         
-        return view('Student_Staff/appointment', $data);
+        return view('Appointment/appointment', $data);
     }
 
     public function add_appointment(){
-        return view('Student_Staff/add_appointment');
+        return view('Appointment/add_appointment');
     }
 
     public function store_appointment()
@@ -91,7 +91,7 @@ class AppointmentController extends BaseController
 
         $data['a'] = $appoint->find($id);
 
-        return view('Student_Staff/edit_appointment', $data);
+        return view('Appointment/edit_appointment', $data);
     }
 
     public function update_appointment($id){

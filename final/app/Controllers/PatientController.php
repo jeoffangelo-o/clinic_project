@@ -14,12 +14,12 @@ class PatientController extends BaseController
 
         $data['patient'] = $patient->findAll();
 
-        return view('Nurse/patient', $data);
+        return view('Patient/patient', $data);
     }
 
     public function add_patient()
     {
-        return view('Nurse/add_patient');
+        return view('Patient/add_patient');
     }
 
     public function store_patient()
@@ -69,7 +69,7 @@ class PatientController extends BaseController
 
         $data['p'] = $patient->find($id);
 
-        return view('/Nurse/view_patient', $data);
+        return view('/Patient/view_patient', $data);
     }
 
     public function edit_patient($id){
@@ -77,7 +77,7 @@ class PatientController extends BaseController
 
         $data['p'] = $patient->find($id);
 
-        return view('/Nurse/edit_patient', $data);
+        return view('/Patient/edit_patient', $data);
     }
 
     public function update_patient($id)
