@@ -33,7 +33,7 @@
             
             <div>
                 <button><a href="/patient">Manage Patient</a></button>
-                <button><a href="#">Consultation</a></button>
+                <button><a href="/consultation">Consultation</a></button>
 
             </div>
 

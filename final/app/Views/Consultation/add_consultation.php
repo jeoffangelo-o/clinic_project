@@ -10,22 +10,28 @@
 
     <?php if(session()->get('role') === 'admin' || session()->get('role')):  ?>
 
-        <form action="/consultation" method="get" >
+        <form action="/consultation/add" method="get" >
             <label for="">Service:</label>
             <select name="service" id="" onchange="this.form.submit()">
                 <option value="walkin" <?= (session()->get('service') === 'walkin') ? 'selected' : '' ?>>Walk-In</option>
                 <option value="appoint" <?= (session()->get('service') === 'appoint') ? 'selected' : '' ?>>Appointment</option>
             </select>
+            <br><br>
         </form>
         
-        <form action="/consultation/add" method="post">
+        <form action="/consultation/store" method="post">
 
             <?php if(session()->get('service') === 'walkin'): ?>
                 
-                
+                <label for="">Patient ID:</label>
+                <input type="number" name="patient_id" id="">
 
             <?php else: ?>
                 
+                <label for="">Appointment ID:</label>
+                <input type="number" name="appointment_id" id="">
+                <input type="hidden" name="patient_id" id="">
+
             <?php endif; ?>
 
         </form>
