@@ -90,6 +90,15 @@ class ConsultationController extends BaseController
          return redirect()->to('/consultation/add/?service='.session()->get('service'))->with('message', 'Consultation Added Successfully');
     }
 
+    public function edit_consultation($id)
+    {
+        $consult = new ConsultationModel();
+
+        $data['consult'] = $consult->find($id);
+
+        return view('Consultation/edit_consultation', $data);
+    }
+
      
 
 

@@ -42,6 +42,7 @@ $routes->post('/appointment/update/(:num)', 'AppointmentController::update_appoi
 $routes->get('/consultation', 'ConsultationController::consultation');
 $routes->get('/consultation/add', 'ConsultationController::add_consultation');
 $routes->post('/consultation/store', 'ConsultationController::store_consultation');
+$routes->get('/consultation/edit/(:num)', 'ConsultationController::edit_consultation/$1');
 
 
 
