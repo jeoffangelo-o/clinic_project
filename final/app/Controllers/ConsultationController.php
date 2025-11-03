@@ -90,7 +90,7 @@ class ConsultationController extends BaseController
          return redirect()->to('/consultation/add')->with('message', 'Consultation Added Successfully');
     }
 
-   
+     
 
 
 }
