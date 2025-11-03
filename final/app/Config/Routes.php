@@ -43,6 +43,8 @@ $routes->get('/consultation', 'ConsultationController::consultation');
 $routes->get('/consultation/add', 'ConsultationController::add_consultation');
 $routes->post('/consultation/store', 'ConsultationController::store_consultation');
 $routes->get('/consultation/edit/(:num)', 'ConsultationController::edit_consultation/$1');
+$routes->post('/consultation/update/(:num)', 'ConsultationController::update_consultation/$1');
+$routes->get('/consultation/delete/(:num)', 'ConsultationController::delete_consultation/$1');
 
 
 
