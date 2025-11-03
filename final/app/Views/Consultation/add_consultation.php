@@ -34,7 +34,7 @@
 
             <?php else: ?>
 
-                <input type="hidden" name="service" value="walkin">
+                <input type="hidden" name="service" value="appoint">
 
                 <label for="">Appointment ID:</label>
                 <input type="number" name="appointment_id" id="" required>
