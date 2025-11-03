@@ -13,14 +13,16 @@
         <form action="/consultation" method="get" >
             <label for="">Service:</label>
             <select name="service" id="" onchange="this.form.submit()">
-                <option value="walkin">Walk-In</option>
-                <option value="appoint">Appointment</option>
+                <option value="walkin" <?= (session()->get('service') === 'walkin') ? 'selected' : '' ?>>Walk-In</option>
+                <option value="appoint" <?= (session()->get('service') === 'appoint') ? 'selected' : '' ?>>Appointment</option>
             </select>
         </form>
         
         <form action="/consultation/add" method="post">
 
-            <?php if(session()->get('walkIn')): ?>
+            <?php if(session()->get('service') === 'walkin'): ?>
+                
+                
 
             <?php else: ?>
                 
