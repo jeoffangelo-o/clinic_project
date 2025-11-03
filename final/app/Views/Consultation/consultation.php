@@ -8,6 +8,11 @@
 <body>
     <h1>Consultation</h1>
 
+    <?php if(session()->getFlashData('message')): ?>
+        <p><?= session()->getFlashData('message') ?></p>
+    <?php endif; ?>
+
+    <br>
     
     <button><a href="/consultation/add">Add Consultation</a></button>
 
@@ -26,8 +31,8 @@
                 <p><strong>Prescription:</strong> <?= $c['prescription'] ?> </p>
                 <p><strong>Notes:</strong> <?= ($c['notes'] === null || $c['notes'] === '') ? 'None' : $c['notes'] ?> </p>
                 <p><strong>Consultation Date:</strong> <?= $c['consultation_date'] ?> </p>
-                <button><a href="<?= base_url('/consultation/edit'.$c['consultation_id']) ?>">Edit</a></button>
-                <button><a href="<?= base_url('/consultation/delete'.$c['consultation_id']) ?>">Delete</a></button>
+                <button><a href="<?= base_url('/consultation/edit/'.$c['consultation_id']) ?>">Edit</a></button>
+                <button><a href="<?= base_url('/consultation/delete/'.$c['consultation_id']) ?>">Delete</a></button>
             </div>
 
         <?php endforeach; ?>

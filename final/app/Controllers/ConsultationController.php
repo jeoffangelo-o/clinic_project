@@ -99,6 +99,31 @@ class ConsultationController extends BaseController
         return view('Consultation/edit_consultation', $data);
     }
 
+    public function update_consultation($id)
+    {
+        $consult = new ConsultationModel();
+
+        $data = [
+            'diagnosis' => request()->getPost('diagnosis'),
+            'treatment' => request()->getPost('treatment'),
+            'prescription' => request()->getPost('prescription'),
+            'notes' => request()->getPost('notes'),
+        ];
+
+        $consult->update($id, $data);
+
+        return redirect()->to('/consultation/edit/'.$id)->with('message', 'Consultation Updated Successfully');
+    }
+
+    public function delete_consultation($id)
+    {
+        $consult = new ConsultationModel();
+
+        $consult->delete($id);
+
+        return redirect()->to('/consultation')->with('message', 'Consultation Deleted Successfully');
+    }
+
      
 
 
