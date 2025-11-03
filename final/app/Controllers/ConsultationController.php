@@ -85,8 +85,12 @@ class ConsultationController extends BaseController
 
         }
 
+         $consult->insert($data);
 
+         return redirect()->to('/consultation/add')->with('message', 'Consultation Added Successfully');
     }
 
-    
+   
+
+
 }
