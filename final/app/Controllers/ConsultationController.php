@@ -47,7 +47,7 @@ class ConsultationController extends BaseController
         if($service === 'walkin'){
             $patient_id = request()->getPost('patient_id');
 
-            $patientExist = $patient->where('patient_id', $patient_id)->first;
+            $patientExist = $patient->where('patient_id', $patient_id)->first();
 
             if(!$patientExist){
                 return redirect()->to('/consultation/add')->with('message', 'Patient ID is not found.');
@@ -80,17 +80,17 @@ class ConsultationController extends BaseController
                 'appointment_id' => request()->getPost('appointment_id'),
                 'prescription' => request()->getPost('prescription'),
                 'notes' => request()->getPost('notes'),
-                'consultation_data' => date('Y-m-d H:i:s')
+                'consultation_date' => date('Y-m-d H:i:s')
             ];
 
         }
 
          $consult->insert($data);
 
-         return redirect()->to('/consultation/add')->with('message', 'Consultation Added Successfully');
+         return redirect()->to('/consultation/add/?service='.session()->get('service'))->with('message', 'Consultation Added Successfully');
     }
 
      
-    
+
 
 }
