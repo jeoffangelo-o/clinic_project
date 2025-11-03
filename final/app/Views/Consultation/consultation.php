@@ -17,6 +17,7 @@
 
             <div style="border: 1px solid black;">
 
+                <p><strong>Consultation ID:</strong> <?= $c['consultation_id'] ?> </p>
                 <p><strong>Appointment ID:</strong> <?= ($c['appointment_id'] !== null) ? $c['appointment_id'] : 'N/A' ?> </p>
                 <p><strong>Patient ID:</strong> <?= $c['patient_id'] ?> </p>
                 <p><strong>Nurse ID:</strong> <?= $c['nurse_id'] ?> </p>
@@ -25,6 +26,8 @@
                 <p><strong>Prescription:</strong> <?= $c['prescription'] ?> </p>
                 <p><strong>Notes:</strong> <?= ($c['notes'] === null || $c['notes'] === '') ? 'None' : $c['notes'] ?> </p>
                 <p><strong>Consultation Date:</strong> <?= $c['consultation_date'] ?> </p>
+                <button><a href="<?= base_url('/consultation/edit'.$c['consultation_id']) ?>">Edit</a></button>
+                <button><a href="<?= base_url('/consultation/delete'.$c['consultation_id']) ?>">Delete</a></button>
             </div>
 
         <?php endforeach; ?>

@@ -12,7 +12,7 @@
         <p><?= session()->getFlashData('message') ?></p>
     <?php endif; ?>
 
-    <?php if(session()->get('role') === 'admin' || session()->get('role')):  ?>
+    <?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'):  ?>
 
         <form action="/consultation/add" method="get" >
             <label for="">Service:</label>
