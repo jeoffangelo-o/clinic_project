@@ -26,18 +26,30 @@
                 <input type="hidden" name="service" value="walkin">
                 
                 <label for="">Patient ID:</label>
-                <input type="number" name="patient_id" id="">
+                <input type="number" name="patient_id" id="" required>
 
             <?php else: ?>
-                
+
                 <input type="hidden" name="service" value="walkin">
 
                 <label for="">Appointment ID:</label>
-                <input type="number" name="appointment_id" id="">
+                <input type="number" name="appointment_id" id="" required>
 
             <?php endif; ?>
             
+            <br><br>
+            <input type="hidden" name="nurse_id" value="<?= session()->get('user_id')?>">
 
+            <label for="">Diagnosis:</label>
+            <input type="text" name="diagnosis" id="" required><br><br>
+            <label for="">Treatment:</label>
+            <input type="text" name="treatment" id="" required><br><br>
+            <label for="">Prescription:</label>
+            <input type="text" name="prescription" id="" required><br><br>
+            <label for="">Notes:</label>
+            <input type="text" name="notes" id="" required><br><br>
+            
+            <input type="submit" value="Submit Consultation">
 
         </form>
 
