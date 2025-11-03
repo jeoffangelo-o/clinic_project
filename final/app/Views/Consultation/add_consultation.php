@@ -51,7 +51,7 @@
             <label for="">Prescription:</label>
             <input type="text" name="prescription" id="" required><br><br>
             <label for="">Notes:</label>
-            <input type="text" name="notes" id="" required><br><br>
+            <input type="text" name="notes" id="" ><br><br>
             
             <input type="submit" value="Submit Consultation">
 
