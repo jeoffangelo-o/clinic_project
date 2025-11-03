@@ -23,16 +23,21 @@
 
             <?php if(session()->get('service') === 'walkin'): ?>
                 
+                <input type="hidden" name="service" value="walkin">
+                
                 <label for="">Patient ID:</label>
                 <input type="number" name="patient_id" id="">
 
             <?php else: ?>
                 
+                <input type="hidden" name="service" value="walkin">
+
                 <label for="">Appointment ID:</label>
                 <input type="number" name="appointment_id" id="">
-                <input type="hidden" name="patient_id" id="">
 
             <?php endif; ?>
+            
+
 
         </form>
 
