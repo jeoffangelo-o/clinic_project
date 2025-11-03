@@ -8,6 +8,10 @@
 <body>
     <h1>Add Consultation</h1>
 
+    <?php if(session()->getFlashData('message')): ?>
+        <p><?= session()->getFlashData('message') ?></p>
+    <?php endif; ?>
+
     <?php if(session()->get('role') === 'admin' || session()->get('role')):  ?>
 
         <form action="/consultation/add" method="get" >
