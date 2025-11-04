@@ -10,6 +10,10 @@
     <?php if(session()->get('role') === 'admin'): ?>
         <h1>List of User</h1>
 
+        <?php if(session()->getFlashData('message')): ?>
+           <p> <?= session()->getFlashData('message') ?></p>
+        <?php endif; ?>
+
         <table border='1'>
             <tr>
                 <th>ID</th>
@@ -31,7 +35,7 @@
 
                     <td>
                         <a href="<?= base_url('/edit_user/'.$u['user_id']) ?>">Edit</a>
-                        <a href="<?= base_url('/delete_user/'.$u['user_id']) ?>">Delete</a>
+                        <a href="<?= base_url('/delete_user/'.$u['user_id']) ?>" onclick="return confirm('Are you sure to delete USER ID # <?= $u['user_id']  ?> (<?=  $u['username'] ?>)')">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
