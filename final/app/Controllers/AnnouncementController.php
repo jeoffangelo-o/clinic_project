@@ -10,6 +10,6 @@ class AnnouncementController extends BaseController
 {
     public function announcement()
     {
-        //
+        return view('Announcement/announcement');
     }
 }
