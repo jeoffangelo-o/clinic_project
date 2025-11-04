@@ -150,4 +150,13 @@ class UserController extends BaseController
         
         return redirect()->to('/edit_user/'.$id)->with('message', 'User Updated Successfully');
     }
+
+    public function delete_user($id)
+    {
+        $user = new UserController();
+
+        $user->delete($id);
+
+        return redirect()->to('/list_user')->with('message', 'User Deleted Successfully');
+    }
 }

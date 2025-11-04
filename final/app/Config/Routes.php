@@ -18,6 +18,7 @@ $routes->get('/list_user', 'UserController::list_user');
 
 $routes->get('/edit_user/(:num)', 'UserController::edit_user/$1');
 $routes->post('/update_user/(:num)', 'UserController::update_user/$1');
+$routes->post('/delete_user/(:num)', 'UserController::delete_user/$1');
 
 
 
