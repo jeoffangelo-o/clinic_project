@@ -8,7 +8,7 @@ use App\Models\AnnouncementModel;
 
 class AnnouncementController extends BaseController
 {
-    public function index()
+    public function announcement()
     {
         //
     }
