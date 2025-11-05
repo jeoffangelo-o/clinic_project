@@ -8,6 +8,6 @@
 <body>
     <h1>Announcement</h1>
 
-    <button><a href="/announcement">Create New Announcement</a></button>
+    <button><a href="/announcement/add">Create New Announcement</a></button>
 </body>
 </html>
