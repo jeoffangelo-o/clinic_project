@@ -12,7 +12,8 @@ class AnnouncementModel extends Model
     protected $allowedFields    = ['title',
                                     'content',
                                     'posted_by',
-                                    'posted_at'
+                                    'posted_at',
+                                    'posted_until'
                                     ];
 
 }
