@@ -27,7 +27,7 @@
             <label for="">Notes:</label>
             <input type="text" name="notes" id="" value="<?=  $consult['notes'] ?>" ><br><br>
             
-            <input type="submit" value="Update Consultation">
+            <input type="submit" value="Update Consultation"> 
 
         </form>
 
