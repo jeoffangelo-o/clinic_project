@@ -34,6 +34,7 @@
             <div>
                 <button><a href="/patient">Manage Patient</a></button>
                 <button><a href="/consultation">Consultation</a></button>
+                <button><a href="/announcement">Announcement</a></button>
 
             </div>
 

@@ -48,4 +48,5 @@ $routes->post('/consultation/update/(:num)', 'ConsultationController::update_con
 $routes->get('/consultation/delete/(:num)', 'ConsultationController::delete_consultation/$1');
 
 
-
+$routes->get('/announcement', 'AnnouncementController::announcement');
+$routes->get('/announcement/add', 'AnnouncementController::add_announcement');

@@ -12,4 +12,9 @@ class AnnouncementController extends BaseController
     {
         return view('Announcement/announcement');
     }
+
+    public function add_announcement()
+    {
+        return view('Announcement/add_announcement');
+    }
 }
