@@ -9,5 +9,17 @@
     <h1>Announcement</h1>
 
     <button><a href="/announcement/add">Create New Announcement</a></button>
+
+    <h2>List of Announcements</h2>
+
+    <?php if(!empty($announce)): ?>
+
+        
+
+    <?php else: ?>
+
+    <?php endif; ?>
+
+
 </body>
 </html>
