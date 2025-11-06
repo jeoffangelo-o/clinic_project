@@ -50,3 +50,4 @@ $routes->get('/consultation/delete/(:num)', 'ConsultationController::delete_cons
 
 $routes->get('/announcement', 'AnnouncementController::announcement');
 $routes->get('/announcement/add', 'AnnouncementController::add_announcement');
+$routes->post('/announcement/store', 'AnnouncementController::store_announcement');

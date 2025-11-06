@@ -8,7 +8,11 @@
 <body>
     <h1>Create Announcement</h1>
 
-    <form action="/announcement/add" method="post">
+    <?php if(session()->getFlashData('message')): ?>
+        <p><?=  session()->getFlashData('message') ?></p>
+    <?php endif; ?>
+
+    <form action="/announcement/store" method="post">
         <label for="">Image Url:</label>
         <input type="text" name="url" id=""><br><br>
         <label for="">Title:</label>
