@@ -17,4 +17,22 @@ class AnnouncementController extends BaseController
     {
         return view('Announcement/add_announcement');
     }
+
+    public function store_announcement()
+    {
+        $announce = new AnnouncementModel();
+
+        $data = [
+            'title' => request()->getPost('title'),
+            'content' => request()->getPost('content'),
+            'posted_by' => session()->get('user_id'),
+            'posted_at' => date('Y:m:d H-i-s'),
+            'posted_until' => request()->getPost('posted_until'),
+            'url' => request()->getPost('url'),
+        ];
+
+        $announce->insert($data);
+
+        return redirect()->to('/announcement/add')->with('message', 'Announcement is Posted Successfully');
+    }
 }
