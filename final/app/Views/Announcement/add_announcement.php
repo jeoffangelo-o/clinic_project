@@ -10,13 +10,13 @@
 
     <form action="/announcement/add" method="post">
         <label for="">Image Url:</label>
-        <input type="text" name="url" id="">
+        <input type="text" name="url" id=""><br><br>
         <label for="">Title:</label>
         <input type="text" name="title" id=""><br><br>
-        <label for="">Content:</label>
+        <label for="">Content:</label><br>
         <textarea name="content" id=""></textarea><br><br>
         <label for="">Posted Until:</label>
-        <input type="datetime-local" name="posted_until" id="">
+        <input type="datetime-local" name="posted_until" id=""><br><br>
         <input type="submit" value="Create Announcement">
 
     </form>
