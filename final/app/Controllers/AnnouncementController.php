@@ -70,8 +70,12 @@ public function store_announcement()
     }
 
    
-
     return redirect()->to('/announcement/add')->with('message', 'Announcement Posted Successfully');
+    }
 
-}
+    public function edit_announcement()
+    {
+        $announce = new AnnouncementModel();
+    }
+
 }

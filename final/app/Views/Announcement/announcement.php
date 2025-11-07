@@ -21,7 +21,8 @@
                 <h3><?= $a['title'] ?></h3>
                 <p><?= $a['posted_at'] ?></p><br>
                 <h2><?= $a['content'] ?></h2>
-
+                <button><a href="<?= base_url('/announcement/edit/'.$a['announcement_id'])?>">Edit</a></button>
+                <button><a href="<?= base_url('/announcement/delete/'.$a['announcement_id'])?>">Delete</a></button>
             </div>
 
         <?php endforeach; ?>
