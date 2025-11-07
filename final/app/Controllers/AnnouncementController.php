@@ -36,25 +36,21 @@ public function store_announcement()
         'url'          => request()->getPost('url'),
     ];
 
-    // Insert announcement record
+ 
     $a->insert($data);
 
-    // Collect data for email body
+    //email
+
     $title     = request()->getPost('title');
     $url       = request()->getPost('url');
-    $posted_at = date('Y-m-d H:i:s'); // use actual current time instead of request()->getPost('posted_at')
+    $posted_at = date('Y-m-d H:i:s');
     $content   = request()->getPost('content');
 
     $email = \Config\Services::email();
     $allUser = $user->findAll();
 
-    $sentCount = 0; // counter
-    $failCount = 0; // counter
-
     foreach ($allUser as $u) {
-    
 
-            // Prepare message
             $message = '
                 <img src="' . $url . '" alt="image" style="height: 100px; width: 80px;">
                 <h3>' . $title . '</h3>
@@ -62,32 +58,20 @@ public function store_announcement()
                 <h2>' . $content . '</h2>
             ';
 
-            // Set up email
             $email->setTo($u['email']);
             $email->setFrom('jeoffgbanaria@gmail.com', 'CSPC Clinic');
             $email->setSubject('ANNOUNCEMENT!!!');
             $email->setMessage($message);
 
-            // Try sending
-            if ($email->send()) {
-                $sentCount++;
-            } else {
-                $failCount++;
-                log_message('error', 'Email failed to send to: ' . $u['email']);
-                log_message('error', $email->printDebugger(['headers']));
-            }
-
-            // Clear recipients before next loop
+            $email->send();
+            
             $email->clear(true);
         
     }
 
-    // Feedback message
-    $message = "✅ Announcement posted successfully!<br>"
-             . "Emails sent: <strong>{$sentCount}</strong><br>"
-             . "Failed: <strong>{$failCount}</strong>";
+   
 
-    return redirect()->to('/announcement/add')->with('message', $message);
+    return redirect()->to('/announcement/add')->with('message', 'Announcement Posted Successfully');
 
 }
 }
