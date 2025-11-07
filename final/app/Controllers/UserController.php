@@ -153,7 +153,7 @@ class UserController extends BaseController
 
     public function delete_user($id)
     {
-        $user = new UserController();
+        $user = new UserModel();
 
         $user->delete($id);
 
