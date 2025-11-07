@@ -55,6 +55,7 @@ public function store_announcement()
                 <img src="' . $url . '" alt="image" style="height: 100px; width: 80px;">
                 <h3>' . $title . '</h3>
                 <p>' . $posted_at . '</p><br>
+                <h2> Good Day '. $u['username'] . '!!!</h2><br><br>
                 <h2>' . $content . '</h2>
             ';
 
