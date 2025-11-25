@@ -9,8 +9,12 @@ use App\Models\UserModel;
 
 class PatientController extends BaseController
 {
-     public function patient()
+    public function patient()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $patient = new PatientModel();
 
         $data['patient'] = $patient->findAll();
@@ -20,11 +24,19 @@ class PatientController extends BaseController
 
     public function add_patient()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         return view('Patient/add_patient');
     }
 
     public function store_patient()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $patient = new PatientModel();
         $user = new UserModel();
 
@@ -74,6 +86,10 @@ class PatientController extends BaseController
     }
 
     public function view_patient($id){
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $patient = new PatientModel();
 
         $data['p'] = $patient->find($id);
@@ -86,6 +102,10 @@ class PatientController extends BaseController
     }
 
     public function edit_patient($id){
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $patient = new PatientModel();
 
         $data['p'] = $patient->find($id);
@@ -99,6 +119,10 @@ class PatientController extends BaseController
 
     public function update_patient($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $patient = new PatientModel();
 
         $exist = $patient->find($id);
@@ -128,6 +152,10 @@ class PatientController extends BaseController
 
     public function delete_patient($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $patient = new PatientModel();
         
         $exist = $patient->find($id);

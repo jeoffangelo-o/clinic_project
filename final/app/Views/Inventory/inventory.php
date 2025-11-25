@@ -29,17 +29,17 @@
             <?php foreach($inventory as $item): ?>
 
                 <tr>
-                    <td><?= $item['item_id'] ?></td>
-                    <td><?= $item['item_name'] ?></td>
-                    <td><?= ucfirst($item['category']) ?></td>
-                    <td><?= $item['quantity'] ?></td>
-                    <td><?= $item['unit'] ?: 'N/A' ?></td>
-                    <td><?= $item['expiry_date'] ?: 'N/A' ?></td>
-                    <td><?= $item['updated_at'] ?></td>
+                    <td><?= esc($item['item_id']) ?></td>
+                    <td><?= esc($item['item_name']) ?></td>
+                    <td><?= esc(ucfirst($item['category'])) ?></td>
+                    <td><?= esc($item['quantity']) ?></td>
+                    <td><?= esc($item['unit'] ?: 'N/A') ?></td>
+                    <td><?= esc($item['expiry_date'] ?: 'N/A') ?></td>
+                    <td><?= esc($item['updated_at']) ?></td>
 
                     <td>
                         <a href="<?= base_url('/inventory/edit/'.$item['item_id'])?>">Edit</a>
-                        <a href="<?= base_url('/inventory/delete/'.$item['item_id'])?>" onclick="return confirm('Are you sure to delete item #<?= $item['item_id'] ?>?')">Delete</a>
+                        <a href="<?= base_url('/inventory/delete/'.$item['item_id'])?>" onclick="return confirm('Are you sure to delete item #<?= esc($item['item_id']) ?>?')">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

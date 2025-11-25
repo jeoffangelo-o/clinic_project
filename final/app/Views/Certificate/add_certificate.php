@@ -13,7 +13,7 @@
     <?php endif; ?>
 
     <form action="/certificate/store" method="post">
-
+        <?= csrf_field() ?>
         <label for="patient_id">Patient ID:</label>
         <input type="number" name="patient_id" id="patient_id" required><br><br>
 

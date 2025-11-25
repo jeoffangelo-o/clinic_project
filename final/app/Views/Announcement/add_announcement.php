@@ -13,8 +13,9 @@
     <?php endif; ?>
 
     <form action="/announcement/store" method="post">
+        <?= csrf_field() ?>
         <label for="">Image Url:</label>
-        <input type="text" name="url" id=""><br><br>
+        <input type="url" name="url" id=""><br><br>
         <label for="">Title:</label>
         <input type="text" name="title" id=""><br><br>
         <label for="">Content:</label><br>

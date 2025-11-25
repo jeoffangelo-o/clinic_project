@@ -13,6 +13,7 @@
     <?php endif; ?>
 
     <form action="/appointment/store" method="post">
+        <?= csrf_field() ?>
         <label for="">Appointment Date:</label>
         <input type="datetime-local" name="appointment_date" id="" min="<?= date('Y-m-d\TH:i') ?>" required><br><br>
         <label for="">Purpose:</label>

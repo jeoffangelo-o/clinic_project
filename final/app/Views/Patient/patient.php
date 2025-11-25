@@ -27,16 +27,16 @@
             <?php foreach($patient as $p): ?>
 
                 <tr>
-                    <td><?= $p['patient_id'] ?></td>
-                    <td><?= (!empty($p['user_id'])) ? $p['user_id'] : 'Walk In'?></td>
-                    <td><?= $p['last_name']  . ', ' . $p['first_name'] . ' ' . $p['middle_name'] ?></td>
-                    <td><?= $p['gender'] ?></td>
-                    <td><?= $p['created_at'] ?></td>
+                    <td><?= esc($p['patient_id']) ?></td>
+                    <td><?= (!empty($p['user_id'])) ? esc($p['user_id']) : 'Walk In'?></td>
+                    <td><?= esc($p['last_name'])  . ', ' . esc($p['first_name']) . ' ' . esc($p['middle_name']) ?></td>
+                    <td><?= esc($p['gender']) ?></td>
+                    <td><?= esc($p['created_at']) ?></td>
 
                     <td>
                         <a href="<?= base_url('/patient/view/'.$p['patient_id'])?>">View</a>
                         <a href="<?= base_url('/patient/edit/'.$p['patient_id'])?>">Edit</a>
-                        <a href="<?= base_url('/patient/delete/'.$p['patient_id'])?>" onclick="confirm('Are you Sure to Delete Patient #<?= $p['patient_id'] ?>')">Delete</a>
+                        <a href="<?= base_url('/patient/delete/'.$p['patient_id'])?>" onclick="return confirm('Are you sure to delete patient #<?= esc($p['patient_id']) ?>')">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

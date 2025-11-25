@@ -15,6 +15,7 @@
     <?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'):  ?>
 
         <form action="<?= base_url('/consultation/update/'.$consult['consultation_id']) ?>" method="post">
+            <?= csrf_field() ?>
 
             <p>Appointment ID: <?= ( $consult['appointment_id'] === null )? 'N/A' :  $consult['appointment_id']  ?></p>
             <p>Patient ID: <?=  $consult['patient_id'] ?></p>

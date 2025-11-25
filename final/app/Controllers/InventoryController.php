@@ -10,6 +10,10 @@ class InventoryController extends BaseController
 {
     public function inventory()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $inventory = new InventoryModel();
 
         $data['inventory'] = $inventory->findAll();
@@ -19,11 +23,19 @@ class InventoryController extends BaseController
 
     public function add_inventory()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         return view('Inventory/add_inventory');
     }
 
     public function store_inventory()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $inventory = new InventoryModel();
 
         $item_name = request()->getPost('item_name');
@@ -51,6 +63,10 @@ class InventoryController extends BaseController
 
     public function edit_inventory($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $inventory = new InventoryModel();
 
         $data['item'] = $inventory->find($id);
@@ -64,6 +80,10 @@ class InventoryController extends BaseController
 
     public function update_inventory($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $inventory = new InventoryModel();
 
         $data = [
@@ -82,6 +102,10 @@ class InventoryController extends BaseController
 
     public function delete_inventory($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $inventory = new InventoryModel();
         
         $exist = $inventory->find($id);

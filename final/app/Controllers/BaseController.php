@@ -55,4 +55,31 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = service('session');
     }
+
+    /**
+     * Check if user is authenticated
+     * Redirects to login if not authenticated
+     */
+    protected function requireLogin()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+    }
+
+    /**
+     * Check if user has specific role
+     * Redirects to home if user doesn't have the required role
+     */
+    protected function requireRole($roles = [])
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        $userRole = session()->get('role');
+        if (!in_array($userRole, $roles)) {
+            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        }
+    }
 }

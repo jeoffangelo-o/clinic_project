@@ -17,10 +17,10 @@
         <?php foreach($announce as $a): ?>
 
             <div style="border: 1px solid black;">
-                <img src="<?= $a['url']?>" alt="https://placehold.co/600x400" style="height: 100px; width: 80px;">
-                <h3><?= $a['title'] ?></h3>
-                <p><?= $a['posted_at'] ?></p><br>
-                <h2><?= $a['content'] ?></h2>
+                <img src="<?= esc($a['url'], 'attr') ?>" alt="announcement" style="height: 100px; width: 80px;">
+                <h3><?= esc($a['title']) ?></h3>
+                <p><?= esc($a['posted_at']) ?></p><br>
+                <h2><?= esc($a['content']) ?></h2>
                 <button><a href="<?= base_url('/announcement/edit/'.$a['announcement_id'])?>">Edit</a></button>
                 <button><a href="<?= base_url('/announcement/delete/'.$a['announcement_id'])?>">Delete</a></button>
             </div>

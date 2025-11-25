@@ -24,6 +24,7 @@
         </form>
         
         <form action="/consultation/store" method="post">
+            <?= csrf_field() ?>
 
             <?php if(session()->get('service') === 'walkin'): ?>
                 

@@ -26,14 +26,14 @@
             <?php foreach($report as $r): ?>
 
                 <tr>
-                    <td><?= $r['report_id'] ?></td>
-                    <td><?= ucfirst($r['report_type']) ?></td>
-                    <td><?= $r['generated_by'] ?></td>
-                    <td><?= $r['generated_at'] ?></td>
+                    <td><?= esc($r['report_id']) ?></td>
+                    <td><?= esc(ucfirst($r['report_type'])) ?></td>
+                    <td><?= esc($r['generated_by']) ?></td>
+                    <td><?= esc($r['generated_at']) ?></td>
 
                     <td>
                         <a href="<?= base_url('/report/view/'.$r['report_id'])?>">View</a>
-                        <a href="<?= base_url('/report/delete/'.$r['report_id'])?>" onclick="return confirm('Are you sure to delete report #<?= $r['report_id'] ?>?')">Delete</a>
+                        <a href="<?= base_url('/report/delete/'.$r['report_id'])?>" onclick="return confirm('Are you sure to delete report #<?= esc($r['report_id']) ?>?')">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

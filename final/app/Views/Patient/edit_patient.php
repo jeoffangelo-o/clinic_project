@@ -13,6 +13,7 @@
     <?php endif; ?>
 
     <form action="<?= base_url('/patient/update/'.$p['patient_id']) ?>" method="post">
+        <?= csrf_field() ?>
         <label for="user_id">User ID: </label>
         <input type="number" name="user_id" id="" placeholder="leave blank if none" value="<?= $p['user_id']?>"><br><br>
         <label for="user_id">First Name:</label>

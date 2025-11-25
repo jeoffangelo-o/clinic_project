@@ -15,7 +15,7 @@
     <?php if(!empty($cert)): ?>
 
     <form action="/certificate/update/<?= $cert['certificate_id'] ?>" method="post">
-
+        <?= csrf_field() ?>
         <label for="patient_id">Patient ID:</label>
         <input type="number" name="patient_id" id="patient_id" value="<?= $cert['patient_id'] ?>" required><br><br>
 

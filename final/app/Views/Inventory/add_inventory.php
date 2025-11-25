@@ -13,6 +13,7 @@
     <?php endif; ?>
 
     <form action="/inventory/store" method="post">
+        <?= csrf_field() ?>
 
         <label for="item_name">Item Name:</label>
         <input type="text" name="item_name" id="item_name" required><br><br>

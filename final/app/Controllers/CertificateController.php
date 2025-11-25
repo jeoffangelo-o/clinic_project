@@ -11,6 +11,10 @@ class CertificateController extends BaseController
 {
     public function certificate()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $cert = new CertificateModel();
 
         $data['certificate'] = $cert->findAll();
@@ -20,11 +24,19 @@ class CertificateController extends BaseController
 
     public function add_certificate()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         return view('Certificate/add_certificate');
     }
 
     public function store_certificate()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $cert = new CertificateModel();
 
         $patient_id = request()->getPost('patient_id');
@@ -55,6 +67,10 @@ class CertificateController extends BaseController
 
     public function view_certificate($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $cert = new CertificateModel();
 
         $data['cert'] = $cert->find($id);
@@ -68,6 +84,10 @@ class CertificateController extends BaseController
 
     public function edit_certificate($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $cert = new CertificateModel();
 
         $data['cert'] = $cert->find($id);
@@ -81,6 +101,10 @@ class CertificateController extends BaseController
 
     public function update_certificate($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $cert = new CertificateModel();
 
         $data = [
@@ -101,6 +125,10 @@ class CertificateController extends BaseController
 
     public function delete_certificate($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $cert = new CertificateModel();
         
         $exist = $cert->find($id);

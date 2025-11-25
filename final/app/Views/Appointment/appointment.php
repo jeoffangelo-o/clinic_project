@@ -28,13 +28,13 @@
 
                 <?php foreach($appoint as $a): ?>
                     <div style="border: 1px solid black">
-                        <p><strong>Appointment ID:</strong> <?= $a['appointment_id'] ?></p>
-                        <p><strong>Patient ID:</strong> <?= $a['patient_id'] ?></p>
-                        <p><strong>Appointment Date:</strong> <?= $a['appointment_date'] ?></p>
-                        <p><strong>Purpose:</strong> <?= $a['purpose'] ?></p>
-                        <p><strong>Status:</strong> <?= $a['status'] ?></p>
-                        <p><strong>Remarks:</strong> <?= (!empty($a['remarks'])) ? $a['remarks'] : 'None'  ?></p>
-                        <p><strong>Date Created:</strong> <?= $a['created_at'] ?></p>
+                        <p><strong>Appointment ID:</strong> <?= esc($a['appointment_id']) ?></p>
+                        <p><strong>Patient ID:</strong> <?= esc($a['patient_id']) ?></p>
+                        <p><strong>Appointment Date:</strong> <?= esc($a['appointment_date']) ?></p>
+                        <p><strong>Purpose:</strong> <?= esc($a['purpose']) ?></p>
+                        <p><strong>Status:</strong> <?= esc($a['status']) ?></p>
+                        <p><strong>Remarks:</strong> <?= (!empty($a['remarks'])) ? esc($a['remarks']) : 'None'  ?></p>
+                        <p><strong>Date Created:</strong> <?= esc($a['created_at']) ?></p>
 
                         <button><a href="<?= base_url('/appointment/edit/'.$a['appointment_id']) ?> ">Edit</a></button>
                         <button><a href="<?= base_url('/appointment/delete/'.$a['appointment_id']) ?>" onclick="return confirm('Are you sure to delete this appointment?')">Delete</a></button>
@@ -64,14 +64,15 @@
                 <?php foreach($appoint as $a): ?>
 
                     <form action="<?= base_url('appointment/update/'.$a['appointment_id']) ?>" method="post">
+                        <?= csrf_field() ?>
 
                         <?php session()->set('activity', 'save') ?>
 
                         <div style="border: 1px solid black">
-                            <p><strong>Appointment ID:</strong> <?= $a['appointment_id'] ?></p>
-                            <p><strong>Patient ID:</strong> <?= $a['patient_id'] ?></p>
-                            <p><strong>Appointment Date:</strong> <?= $a['appointment_date'] ?></p>
-                            <p><strong>Purpose:</strong> <?= $a['purpose'] ?></p>
+                            <p><strong>Appointment ID:</strong> <?= esc($a['appointment_id']) ?></p>
+                            <p><strong>Patient ID:</strong> <?= esc($a['patient_id']) ?></p>
+                            <p><strong>Appointment Date:</strong> <?= esc($a['appointment_date']) ?></p>
+                            <p><strong>Purpose:</strong> <?= esc($a['purpose']) ?></p>
                             <label><strong>Status:</strong> </label>
                             <select name="status" id="">
                                 <option value="pending" <?= ($a['status'] === 'pending') ? 'selected' : ''  ?>>Pending</option>
@@ -81,9 +82,9 @@
                             </select>
                             <br><br>
                             <label><strong>Remarks:</strong> </label>
-                            <input type="text" name="remarks" id="" value="<?= (!empty($a['remarks'])) ? $a['remarks'] : 'None'  ?>" >
+                            <input type="text" name="remarks" id="" value="<?= (!empty($a['remarks'])) ? esc($a['remarks']) : 'None'  ?>" >
 
-                            <p><strong>Date Created:</strong> <?= $a['created_at'] ?></p>
+                            <p><strong>Date Created:</strong> <?= esc($a['created_at']) ?></p>
 
                             <button type="submit">Save</button>
                             <button><a href="<?= base_url('/appointment/edit/'.$a['appointment_id']) ?> ">Edit</a></button>

@@ -13,6 +13,7 @@
     <?php endif; ?>
 
     <form action="/report/store" method="post">
+        <?= csrf_field() ?>
 
         <label for="report_type">Report Type:</label>
         <select name="report_type" id="report_type" required>

@@ -13,6 +13,10 @@ class ConsultationController extends BaseController
 
     public function consultation()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $consult = new ConsultationModel();
 
         $data['consult'] = $consult->findAll();
@@ -22,6 +26,10 @@ class ConsultationController extends BaseController
 
     public function add_consultation()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $consult = new ConsultationModel();
 
         $service = request()->getGet('service');
@@ -38,6 +46,10 @@ class ConsultationController extends BaseController
 
     public function store_consultation()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $appoint = new AppointmentModel();
         $patient = new PatientModel();
         $consult = new ConsultationModel();
@@ -92,6 +104,10 @@ class ConsultationController extends BaseController
 
     public function edit_consultation($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $consult = new ConsultationModel();
 
         $data['consult'] = $consult->find($id);
@@ -105,6 +121,10 @@ class ConsultationController extends BaseController
 
     public function update_consultation($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $consult = new ConsultationModel();
 
         $data = [
@@ -121,6 +141,10 @@ class ConsultationController extends BaseController
 
     public function delete_consultation($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $consult = new ConsultationModel();
 
         $exist = $consult->find($id);

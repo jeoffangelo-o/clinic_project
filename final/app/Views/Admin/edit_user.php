@@ -13,6 +13,7 @@
     <?php endif; ?>
 
     <form action="<?= base_url('/update_user/'.$user['user_id']) ?>" method="post">
+        <?= csrf_field() ?>
 
         <label for="">Username:</label>
         <input type="text" name="username" id="" value="<?= $user['username']?>"   required><br><br>

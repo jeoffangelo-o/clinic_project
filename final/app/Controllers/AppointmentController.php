@@ -12,6 +12,10 @@ class AppointmentController extends BaseController
 {
     public function appointment()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $appoint = new AppointmentModel;
         $patient = new PatientModel;
 
@@ -59,11 +63,19 @@ class AppointmentController extends BaseController
     }
 
     public function add_appointment(){
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         return view('Appointment/add_appointment');
     }
 
     public function store_appointment()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $appoint = new AppointmentModel();
         $patient = new PatientModel();
 
@@ -90,6 +102,10 @@ class AppointmentController extends BaseController
 
     public function edit_appointment($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $appoint = new AppointmentModel();
 
         $data['a'] = $appoint->find($id);
@@ -102,6 +118,10 @@ class AppointmentController extends BaseController
     }
 
     public function update_appointment($id){
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $appoint = new AppointmentModel();
 
         $exist = $appoint->find($id);
@@ -133,6 +153,10 @@ class AppointmentController extends BaseController
 
     public function delete_appointment($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $appoint = new AppointmentModel();
 
         $exist = $appoint->find($id);

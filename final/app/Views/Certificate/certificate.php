@@ -28,17 +28,17 @@
             <?php foreach($certificate as $c): ?>
 
                 <tr>
-                    <td><?= $c['certificate_id'] ?></td>
-                    <td><?= $c['patient_id'] ?></td>
-                    <td><?= ucfirst(str_replace('_', ' ', $c['certificate_type'])) ?></td>
-                    <td><?= $c['validity_start'] ?: 'N/A' ?></td>
-                    <td><?= $c['validity_end'] ?: 'N/A' ?></td>
-                    <td><?= $c['issued_date'] ?></td>
+                    <td><?= esc($c['certificate_id']) ?></td>
+                    <td><?= esc($c['patient_id']) ?></td>
+                    <td><?= esc(ucfirst(str_replace('_', ' ', $c['certificate_type']))) ?></td>
+                    <td><?= esc($c['validity_start'] ?: 'N/A') ?></td>
+                    <td><?= esc($c['validity_end'] ?: 'N/A') ?></td>
+                    <td><?= esc($c['issued_date']) ?></td>
 
                     <td>
                         <a href="<?= base_url('/certificate/view/'.$c['certificate_id'])?>">View</a>
                         <a href="<?= base_url('/certificate/edit/'.$c['certificate_id'])?>">Edit</a>
-                        <a href="<?= base_url('/certificate/delete/'.$c['certificate_id'])?>" onclick="return confirm('Are you sure to delete certificate #<?= $c['certificate_id'] ?>?')">Delete</a>
+                        <a href="<?= base_url('/certificate/delete/'.$c['certificate_id'])?>" onclick="return confirm('Are you sure to delete certificate #<?= esc($c['certificate_id']) ?>?')">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

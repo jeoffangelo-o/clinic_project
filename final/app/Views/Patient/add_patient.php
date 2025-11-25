@@ -14,6 +14,7 @@
     <?php endif; ?>
 
     <form action="/patient/store" method="post">
+        <?= csrf_field() ?>
 
         <?php if(session()->get('role')=== 'admin' || session()->get('role')=== 'nurse' ): ?>
             <label for="user_id">User ID: </label>

@@ -13,6 +13,7 @@
     <?php endif; ?>
 
     <form action="/auth" method="post">
+        <?= csrf_field() ?>
         <label for="">Username:</label>
         <input type="text" name="username" id=""><br><br>
         <label for="">Password:</label>

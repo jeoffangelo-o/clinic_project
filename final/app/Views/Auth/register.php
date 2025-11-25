@@ -13,10 +13,11 @@
     <?php endif; ?>
 
     <form action="/store_user" method="post">
+        <?= csrf_field() ?>
         <label for="">Username:</label>
         <input type="text" name="username" id="" required><br><br>
         <label for="">Password:</label>
-        <input type="text" name="password" id="" required><br><br>
+        <input type="password" name="password" id="" required minlength="6"><br><br>
         <label for="">E-Mail:</label>
         <input type="email" name="email" id="" required><br><br>
         <label for="">Role:</label>
