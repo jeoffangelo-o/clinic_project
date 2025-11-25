@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\InventoryModel;
+
+class InventoryController extends BaseController
+{
+    public function inventory()
+    {
+        $inventory = new InventoryModel();
+
+        $data['inventory'] = $inventory->findAll();
+
+        return view('Inventory/inventory', $data);
+    }
+
+    public function add_inventory()
+    {
+        return view('Inventory/add_inventory');
+    }
+
+    public function store_inventory()
+    {
+        $inventory = new InventoryModel();
+
+        $item_name = request()->getPost('item_name');
+        
+        $exist = $inventory->where('item_name', $item_name)->first();
+
+        if($exist){
+            return redirect()->to('/inventory/add')->with('message', 'Item Already Exists');
+        }
+
+        $data = [
+            'item_name' => $item_name,
+            'category' => request()->getPost('category'),
+            'quantity' => request()->getPost('quantity'),
+            'unit' => request()->getPost('unit'),
+            'expiry_date' => request()->getPost('expiry_date') ?: null,
+            'description' => request()->getPost('description'),
+            'added_by' => session()->get('user_id'),
+        ];
+
+        $inventory->insert($data);
+
+        return redirect()->to('/inventory/add')->with('message', 'Item Added Successfully');
+    }
+
+    public function edit_inventory($id)
+    {
+        $inventory = new InventoryModel();
+
+        $data['item'] = $inventory->find($id);
+
+        return view('Inventory/edit_inventory', $data);
+    }
+
+    public function update_inventory($id)
+    {
+        $inventory = new InventoryModel();
+
+        $data = [
+            'item_name' => request()->getPost('item_name'),
+            'category' => request()->getPost('category'),
+            'quantity' => request()->getPost('quantity'),
+            'unit' => request()->getPost('unit'),
+            'expiry_date' => request()->getPost('expiry_date') ?: null,
+            'description' => request()->getPost('description'),
+        ];
+
+        $inventory->update($id, $data);
+
+        return redirect()->to('/inventory/edit/'.$id)->with('message', 'Item Updated Successfully');
+    }
+
+    public function delete_inventory($id)
+    {
+        $inventory = new InventoryModel();
+        
+        $inventory->delete($id);
+
+        return redirect()->to('/inventory')->with('message', 'Item #' . $id . ' Deleted Successfully');
+    }
+}

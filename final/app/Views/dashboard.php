@@ -32,10 +32,21 @@
             <?php if(session()->get('role') === 'nurse' || session()->get('role') === 'admin'): ?>
             
             <div>
+                <h3>Patient Management</h3>
                 <button><a href="/patient">Manage Patient</a></button>
                 <button><a href="/consultation">Consultation</a></button>
-                <button><a href="/announcement">Announcement</a></button>
+                <button><a href="/certificate">Medical Certificates</a></button>
+            </div>
 
+            <div>
+                <h3>Inventory & Reports</h3>
+                <button><a href="/inventory">Manage Inventory</a></button>
+                <button><a href="/report">Reports</a></button>
+            </div>
+
+            <div>
+                <h3>General</h3>
+                <button><a href="/announcement">Announcement</a></button>
             </div>
 
             <?php endif; ?>
@@ -43,6 +54,7 @@
             
             
             <div>
+                <h3>Appointments</h3>
                 <button>
                     <a href="/appointment<?= (session()->get('role') === 'admin' || session()->get('role') === 'nurse') ? '?status=all' : ''   ?>">
                         Appointment

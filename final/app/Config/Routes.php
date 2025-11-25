@@ -51,3 +51,30 @@ $routes->get('/consultation/delete/(:num)', 'ConsultationController::delete_cons
 $routes->get('/announcement', 'AnnouncementController::announcement');
 $routes->get('/announcement/add', 'AnnouncementController::add_announcement');
 $routes->post('/announcement/store', 'AnnouncementController::store_announcement');
+
+
+$routes->get('/certificate', 'CertificateController::certificate');
+$routes->get('/certificate/add', 'CertificateController::add_certificate');
+$routes->post('/certificate/store', 'CertificateController::store_certificate');
+
+$routes->get('/certificate/view/(:num)', 'CertificateController::view_certificate/$1');
+$routes->get('/certificate/edit/(:num)', 'CertificateController::edit_certificate/$1');
+$routes->post('/certificate/update/(:num)', 'CertificateController::update_certificate/$1');
+$routes->get('/certificate/delete/(:num)', 'CertificateController::delete_certificate/$1');
+
+
+$routes->get('/inventory', 'InventoryController::inventory');
+$routes->get('/inventory/add', 'InventoryController::add_inventory');
+$routes->post('/inventory/store', 'InventoryController::store_inventory');
+
+$routes->get('/inventory/edit/(:num)', 'InventoryController::edit_inventory/$1');
+$routes->post('/inventory/update/(:num)', 'InventoryController::update_inventory/$1');
+$routes->get('/inventory/delete/(:num)', 'InventoryController::delete_inventory/$1');
+
+
+$routes->get('/report', 'ReportController::report');
+$routes->get('/report/generate', 'ReportController::generate_report');
+$routes->post('/report/store', 'ReportController::store_report');
+
+$routes->get('/report/view/(:num)', 'ReportController::view_report/$1');
+$routes->get('/report/delete/(:num)', 'ReportController::delete_report/$1');
