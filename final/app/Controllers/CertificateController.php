@@ -59,6 +59,10 @@ class CertificateController extends BaseController
 
         $data['cert'] = $cert->find($id);
 
+        if(!$data['cert']){
+            return redirect()->to('/certificate')->with('message', 'Error: Certificate not found');
+        }
+
         return view('Certificate/view_certificate', $data);
     }
 
@@ -67,6 +71,10 @@ class CertificateController extends BaseController
         $cert = new CertificateModel();
 
         $data['cert'] = $cert->find($id);
+
+        if(!$data['cert']){
+            return redirect()->to('/certificate')->with('message', 'Error: Certificate not found');
+        }
 
         return view('Certificate/edit_certificate', $data);
     }
@@ -95,6 +103,11 @@ class CertificateController extends BaseController
     {
         $cert = new CertificateModel();
         
+        $exist = $cert->find($id);
+        if(!$exist){
+            return redirect()->to('/certificate')->with('message', 'Error: Certificate not found');
+        }
+
         $cert->delete($id);
 
         return redirect()->to('/certificate')->with('message', 'Certificate #' . $id . ' Deleted Successfully');

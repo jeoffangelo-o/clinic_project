@@ -15,7 +15,7 @@ class AppointmentController extends BaseController
         $appoint = new AppointmentModel;
         $patient = new PatientModel;
 
-        
+        $data['appoint'] = [];
 
         if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
             $user_id = session()->get('user_id');
@@ -26,16 +26,15 @@ class AppointmentController extends BaseController
                 session()->set([
                     'hasPatient' => true
                 ]);
+                $data['appoint'] = $appoint
+                                ->where('patient_id', $exist['patient_id'])
+                                ->findAll();
             }
             else{
                 session()->set([
                     'hasPatient' => false
                 ]);
             }
-
-            $data['appoint'] = $appoint
-                                ->where('patient_id', $exist['patient_id'])
-                                ->findAll();
         }
         else if(session()->get('role') === 'nurse' || session()->get('role') === 'admin' ){
             $stats = request()->getGet('status');
@@ -72,6 +71,10 @@ class AppointmentController extends BaseController
 
         $exist = $patient->where('user_id', $user_id)->first();
 
+        if(!$exist){
+            return redirect()->to('/appointment/add')->with('message', 'Error: Patient information not found');
+        }
+
         $data = [
             'patient_id' => $exist['patient_id'],
             'appointment_date' => request()->getPost('appointment_date'),
@@ -91,11 +94,20 @@ class AppointmentController extends BaseController
 
         $data['a'] = $appoint->find($id);
 
+        if(!$data['a']){
+            return redirect()->to('/appointment')->with('message', 'Error: Appointment not found');
+        }
+
         return view('Appointment/edit_appointment', $data);
     }
 
     public function update_appointment($id){
         $appoint = new AppointmentModel();
+
+        $exist = $appoint->find($id);
+        if(!$exist){
+            return redirect()->to('/appointment')->with('message', 'Error: Appointment not found');
+        }
 
         if(session()->get('activity') === 'save'){
 
@@ -122,6 +134,11 @@ class AppointmentController extends BaseController
     public function delete_appointment($id)
     {
         $appoint = new AppointmentModel();
+
+        $exist = $appoint->find($id);
+        if(!$exist){
+            return redirect()->to('/appointment')->with('message', 'Error: Appointment not found');
+        }
 
         $appoint->delete($id);
 

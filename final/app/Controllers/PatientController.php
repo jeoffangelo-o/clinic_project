@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\PatientModel;
+use App\Models\UserModel;
 
 class PatientController extends BaseController
 {
@@ -25,11 +26,19 @@ class PatientController extends BaseController
     public function store_patient()
     {
         $patient = new PatientModel();
+        $user = new UserModel();
 
         $first_name =  request()->getPost('first_name');
         $middle_name =  request()->getPost('middle_name');
         $last_name =  request()->getPost('last_name');
         $user_id =  request()->getPost('user_id') ?: null;
+
+        if($user_id){
+            $userExists = $user->find($user_id);
+            if(!$userExists){
+                return redirect()->to('/patient/add')->with('message', 'Error: User ID does not exist');
+            }
+        }
 
         $exist = $patient->groupStart()
                         ->where('first_name', $first_name)
@@ -69,6 +78,10 @@ class PatientController extends BaseController
 
         $data['p'] = $patient->find($id);
 
+        if(!$data['p']){
+            return redirect()->to('/patient')->with('message', 'Error: Patient not found');
+        }
+
         return view('/Patient/view_patient', $data);
     }
 
@@ -77,12 +90,21 @@ class PatientController extends BaseController
 
         $data['p'] = $patient->find($id);
 
+        if(!$data['p']){
+            return redirect()->to('/patient')->with('message', 'Error: Patient not found');
+        }
+
         return view('/Patient/edit_patient', $data);
     }
 
     public function update_patient($id)
     {
         $patient = new PatientModel();
+
+        $exist = $patient->find($id);
+        if(!$exist){
+            return redirect()->to('/patient')->with('message', 'Error: Patient not found');
+        }
 
         $data = [
             'user_id' => request()->getPost('user_id') ?: null,
@@ -108,8 +130,13 @@ class PatientController extends BaseController
     {
         $patient = new PatientModel();
         
+        $exist = $patient->find($id);
+        if(!$exist){
+            return redirect()->to('/patient')->with('message', 'Error: Patient not found');
+        }
+
         $patient->delete($id);
 
-        return redirect()->to('/patient')->with('message', 'Patient # ' . $id . 'is Deleted Successfully');
+        return redirect()->to('/patient')->with('message', 'Patient # ' . $id . ' is Deleted Successfully');
     }
 }

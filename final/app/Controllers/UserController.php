@@ -102,16 +102,23 @@ class UserController extends BaseController
 
         $data['user'] = $user->find($id);
 
+        if(!$data['user']){
+            return redirect()->to('/list_user')->with('message', 'Error: User not found');
+        }
+
         return view('Admin/edit_user', $data);
     }
 
     public function update_user($id){
         $user = new UserModel();
 
-        
         $password =  request()->getPost('password');
 
         $exist = $user->where('user_id', $id)->first();
+
+        if(!$exist){
+            return redirect()->to('/list_user')->with('message', 'Error: User not found');
+        }
 
         $verify = password_verify($password, $exist['password']);
 

@@ -59,7 +59,7 @@ class ConsultationController extends BaseController
                 'treatment' => request()->getPost('treatment'),
                 'prescription' => request()->getPost('prescription'),
                 'notes' => request()->getPost('notes'),
-                'consultation_data' => date('Y-m-d H:i:s')
+                'consultation_date' => date('Y-m-d H:i:s')
             ];
         }
         else{
@@ -96,6 +96,10 @@ class ConsultationController extends BaseController
 
         $data['consult'] = $consult->find($id);
 
+        if(!$data['consult']){
+            return redirect()->to('/consultation')->with('message', 'Error: Consultation not found');
+        }
+
         return view('Consultation/edit_consultation', $data);
     }
 
@@ -118,6 +122,11 @@ class ConsultationController extends BaseController
     public function delete_consultation($id)
     {
         $consult = new ConsultationModel();
+
+        $exist = $consult->find($id);
+        if(!$exist){
+            return redirect()->to('/consultation')->with('message', 'Error: Consultation not found');
+        }
 
         $consult->delete($id);
 

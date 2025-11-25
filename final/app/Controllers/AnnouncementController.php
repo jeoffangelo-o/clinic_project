@@ -49,7 +49,14 @@ public function store_announcement()
     $email = \Config\Services::email();
     $allUser = $user->findAll();
 
+    $emailSent = 0;
+    $emailFailed = 0;
+
     foreach ($allUser as $u) {
+        if(empty($u['email'])){
+            $emailFailed++;
+            continue;
+        }
 
             $message = '
                 <img src="' . $url . '" alt="image" style="height: 100px; width: 80px;">
@@ -64,14 +71,23 @@ public function store_announcement()
             $email->setSubject('ANNOUNCEMENT!!!');
             $email->setMessage($message);
 
-            $email->send();
+            if($email->send()){
+                $emailSent++;
+            }
+            else{
+                $emailFailed++;
+            }
             
             $email->clear(true);
         
     }
 
    
-    return redirect()->to('/announcement/add')->with('message', 'Announcement Posted Successfully');
+    $message = 'Announcement Posted Successfully';
+    if($emailFailed > 0){
+        $message .= ' | Emails Sent: ' . $emailSent . ' | Failed: ' . $emailFailed;
+    }
+    return redirect()->to('/announcement/add')->with('message', $message);
     }
 
     public function edit_announcement()

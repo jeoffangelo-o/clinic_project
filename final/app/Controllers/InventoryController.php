@@ -55,6 +55,10 @@ class InventoryController extends BaseController
 
         $data['item'] = $inventory->find($id);
 
+        if(!$data['item']){
+            return redirect()->to('/inventory')->with('message', 'Error: Item not found');
+        }
+
         return view('Inventory/edit_inventory', $data);
     }
 
@@ -80,6 +84,11 @@ class InventoryController extends BaseController
     {
         $inventory = new InventoryModel();
         
+        $exist = $inventory->find($id);
+        if(!$exist){
+            return redirect()->to('/inventory')->with('message', 'Error: Item not found');
+        }
+
         $inventory->delete($id);
 
         return redirect()->to('/inventory')->with('message', 'Item #' . $id . ' Deleted Successfully');

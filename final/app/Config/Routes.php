@@ -77,4 +77,5 @@ $routes->get('/report/generate', 'ReportController::generate_report');
 $routes->post('/report/store', 'ReportController::store_report');
 
 $routes->get('/report/view/(:num)', 'ReportController::view_report/$1');
+$routes->get('/report/export/(:num)', 'ReportController::export_report/$1');
 $routes->get('/report/delete/(:num)', 'ReportController::delete_report/$1');

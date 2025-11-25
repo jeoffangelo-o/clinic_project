@@ -17,11 +17,12 @@
         <label for="report_type">Report Type:</label>
         <select name="report_type" id="report_type" required>
             <option value="">--Select--</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="inventory">Inventory</option>
-            <option value="patient">Patient</option>
+            <option value="patient">Patient Report</option>
+            <option value="consultation">Consultation Report</option>
+            <option value="appointment">Appointment Report</option>
+            <option value="inventory">Inventory Report</option>
+            <option value="announcement">Announcement Report</option>
+            <option value="comprehensive">Comprehensive Report (All Data)</option>
         </select><br><br>
 
         <label for="file_path">File Path (optional):</label>

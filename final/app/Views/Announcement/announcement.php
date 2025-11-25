@@ -28,7 +28,7 @@
         <?php endforeach; ?>
 
     <?php else: ?>
-
+        <h3>No Announcements Yet</h3>
     <?php endif; ?>
 
 
