@@ -20,43 +20,43 @@
             </tr>
             <tr>
                 <td>Certificate ID</td>
-                <td><?= $cert['certificate_id'] ?></td>
+                <td><?= esc($cert['certificate_id']) ?></td>
             </tr>
             <tr>
                 <td>Patient ID</td>
-                <td><?= $cert['patient_id'] ?></td>
+                <td><?= esc($cert['patient_id']) ?></td>
             </tr>
             <tr>
                 <td>Consultation ID</td>
-                <td><?= $cert['consultation_id'] ?: 'N/A' ?></td>
+                <td><?= esc($cert['consultation_id'] ?: 'N/A') ?></td>
             </tr>
             <tr>
                 <td>Certificate Type</td>
-                <td><?= ucfirst(str_replace('_', ' ', $cert['certificate_type'])) ?></td>
+                <td><?= esc(ucfirst(str_replace('_', ' ', $cert['certificate_type']))) ?></td>
             </tr>
             <tr>
                 <td>Diagnosis Summary</td>
-                <td><?= $cert['diagnosis_summary'] ?: 'N/A' ?></td>
+                <td><?= esc($cert['diagnosis_summary'] ?: 'N/A') ?></td>
             </tr>
             <tr>
                 <td>Recommendation</td>
-                <td><?= $cert['recommendation'] ?: 'N/A' ?></td>
+                <td><?= esc($cert['recommendation'] ?: 'N/A') ?></td>
             </tr>
             <tr>
                 <td>Validity Start</td>
-                <td><?= $cert['validity_start'] ?: 'N/A' ?></td>
+                <td><?= esc($cert['validity_start'] ?: 'N/A') ?></td>
             </tr>
             <tr>
                 <td>Validity End</td>
-                <td><?= $cert['validity_end'] ?: 'N/A' ?></td>
+                <td><?= esc($cert['validity_end'] ?: 'N/A') ?></td>
             </tr>
             <tr>
                 <td>Issued Date</td>
-                <td><?= $cert['issued_date'] ?></td>
+                <td><?= esc($cert['issued_date']) ?></td>
             </tr>
             <tr>
                 <td>File Path</td>
-                <td><?= $cert['file_path'] ?: 'N/A' ?></td>
+                <td><?= esc($cert['file_path'] ?: 'N/A') ?></td>
             </tr>
         </table>
 

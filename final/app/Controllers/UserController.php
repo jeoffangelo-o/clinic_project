@@ -89,6 +89,14 @@ class UserController extends BaseController
 
     public function list_user()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        }
+
         $user = new UserModel();
 
         $data['user'] = $user->findAll();
@@ -98,6 +106,14 @@ class UserController extends BaseController
 
     public function edit_user($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        }
+
         $user = new UserModel();
 
         $data['user'] = $user->find($id);
@@ -110,6 +126,14 @@ class UserController extends BaseController
     }
 
     public function update_user($id){
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        }
+
         $user = new UserModel();
 
         $password =  request()->getPost('password');
@@ -160,6 +184,14 @@ class UserController extends BaseController
 
     public function delete_user($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        }
+
         $user = new UserModel();
 
         $user->delete($id);

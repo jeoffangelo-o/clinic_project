@@ -11,6 +11,10 @@ class AnnouncementController extends BaseController
 {
     public function announcement()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $announce = new AnnouncementModel();
 
         $data['announce'] = $announce->findAll();
@@ -20,12 +24,21 @@ class AnnouncementController extends BaseController
 
     public function add_announcement()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         return view('Announcement/add_announcement');
     }
-public function store_announcement()
-{
-    $a = new AnnouncementModel();
-    $user = new UserModel();
+
+    public function store_announcement()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        $a = new AnnouncementModel();
+        $user = new UserModel();
 
     $data = [
         'title'        => request()->getPost('title'),

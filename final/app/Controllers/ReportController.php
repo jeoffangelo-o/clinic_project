@@ -15,6 +15,10 @@ class ReportController extends BaseController
 {
     public function report()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $report = new ReportModel();
 
         $data['report'] = $report->findAll();
@@ -24,11 +28,19 @@ class ReportController extends BaseController
 
     public function generate_report()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         return view('Report/generate_report');
     }
 
     public function store_report()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $report = new ReportModel();
         $report_type = request()->getPost('report_type');
 
@@ -115,6 +127,10 @@ class ReportController extends BaseController
 
     public function view_report($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $report = new ReportModel();
         $rep = $report->find($id);
 
@@ -132,6 +148,10 @@ class ReportController extends BaseController
 
     public function delete_report($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $report = new ReportModel();
         
         $exist = $report->find($id);
@@ -146,6 +166,10 @@ class ReportController extends BaseController
 
     public function export_report($id)
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
         $report = new ReportModel();
         $rep = $report->find($id);
 
