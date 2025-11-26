@@ -40,6 +40,10 @@
 
         <?php 
         $report_type = trim($rep['report_type']);
+        // Treat empty report_type as 'comprehensive' for legacy/empty entries
+        if(empty($report_type)){
+            $report_type = 'comprehensive';
+        }
         // Ensure all expected keys exist with defaults
         $report_data = array_merge([
             'patients' => [],
