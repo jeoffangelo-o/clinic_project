@@ -128,6 +128,15 @@ class ReportController extends BaseController
                 $data['inventory'] = $inventory->findAll();
                 $data['announcements'] = $announce->findAll();
                 $data['appointments'] = $appoint->findAll();
+                $data['total_patients'] = count($data['patients']);
+                $data['total_consultations'] = count($data['consultations']);
+                $data['total_items'] = count($data['inventory']);
+                $data['total_announcements'] = count($data['announcements']);
+                $data['total_appointments'] = count($data['appointments']);
+                $data['pending'] = $appoint->where('status', 'pending')->findAll();
+                $data['approved'] = $appoint->where('status', 'approved')->findAll();
+                $data['completed'] = $appoint->where('status', 'completed')->findAll();
+                $data['low_stock'] = $inventory->where('quantity <', 5)->findAll();
                 break;
         }
 

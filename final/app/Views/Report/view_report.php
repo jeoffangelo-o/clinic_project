@@ -40,6 +40,24 @@
 
         <?php 
         $report_type = trim($rep['report_type']);
+        // Ensure all expected keys exist with defaults
+        $report_data = array_merge([
+            'patients' => [],
+            'consultations' => [],
+            'appointments' => [],
+            'inventory' => [],
+            'announcements' => [],
+            'pending' => [],
+            'approved' => [],
+            'completed' => [],
+            'low_stock' => [],
+            'summary' => [],
+            'total_patients' => 0,
+            'total_consultations' => 0,
+            'total_appointments' => 0,
+            'total_items' => 0,
+            'total_announcements' => 0,
+        ], $report_data ?? []);
         ?>
 
         <?php if(!empty($report_data)): ?>
