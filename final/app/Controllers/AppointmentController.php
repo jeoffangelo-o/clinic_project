@@ -42,6 +42,12 @@ class AppointmentController extends BaseController
         }
         else if(session()->get('role') === 'nurse' || session()->get('role') === 'admin' ){
             $stats = request()->getGet('status');
+            $allowedStatus = ['all', 'pending', 'approved', 'cancelled', 'completed'];
+
+            // Validate status parameter
+            if(empty($stats) || !in_array($stats, $allowedStatus)){
+                $stats = 'all';
+            }
 
             if($stats === 'all'){
                 $data['appoint'] = $appoint->orderBy('created_at', 'asc')->findAll();

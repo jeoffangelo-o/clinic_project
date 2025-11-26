@@ -120,6 +120,15 @@ class ReportController extends BaseController
                     'total_appointments' => count($data['appointments']),
                 ];
                 break;
+
+            default:
+                // Default to all data if report_type is not recognized
+                $data['patients'] = $patient->findAll();
+                $data['consultations'] = $consult->findAll();
+                $data['inventory'] = $inventory->findAll();
+                $data['announcements'] = $announce->findAll();
+                $data['appointments'] = $appoint->findAll();
+                break;
         }
 
         return $data;

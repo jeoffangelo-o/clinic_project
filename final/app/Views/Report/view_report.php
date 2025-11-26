@@ -38,9 +38,13 @@
 
         <br><br>
 
+        <?php 
+        $report_type = trim($rep['report_type']);
+        ?>
+
         <?php if(!empty($report_data)): ?>
 
-            <?php if($rep['report_type'] === 'patient'): ?>
+            <?php if($report_type === 'patient'): ?>
                 <?php if(!empty($report_data['patients'])): ?>
                 <h2>Patient Report</h2>
                 <p>Total Patients: <?= $report_data['total_patients'] ?></p>
@@ -70,7 +74,7 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <?php if($rep['report_type'] === 'consultation'): ?>
+            <?php if($report_type === 'consultation'): ?>
                 <?php if(!empty($report_data['consultations'])): ?>
                 <h2>Consultation Report</h2>
                 <p>Total Consultations: <?= $report_data['total_consultations'] ?></p>
@@ -98,7 +102,7 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <?php if($rep['report_type'] === 'appointment'): ?>
+            <?php if($report_type === 'appointment'): ?>
                 <?php if(!empty($report_data['appointments'])): ?>
                 <h2>Appointment Report</h2>
                 <p>Total Appointments: <?= $report_data['total_appointments'] ?> | Pending: <?= count($report_data['pending']) ?> | Approved: <?= count($report_data['approved']) ?> | Completed: <?= count($report_data['completed']) ?></p>
@@ -126,7 +130,7 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <?php if($rep['report_type'] === 'inventory'): ?>
+            <?php if($report_type === 'inventory'): ?>
                 <?php if(!empty($report_data['inventory'])): ?>
                 <h2>Inventory Report</h2>
                 <p>Total Items: <?= $report_data['total_items'] ?> | Low Stock Items (<5): <?= count($report_data['low_stock']) ?></p>
@@ -156,7 +160,7 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <?php if($rep['report_type'] === 'announcement'): ?>
+            <?php if($report_type === 'announcement'): ?>
                 <?php if(!empty($report_data['announcements'])): ?>
                 <h2>Announcement Report</h2>
                 <p>Total Announcements: <?= $report_data['total_announcements'] ?></p>
@@ -184,7 +188,7 @@
                 <?php endif; ?>
             <?php endif; ?>
 
-            <?php if($rep['report_type'] === 'comprehensive'): ?>
+            <?php if($report_type === 'comprehensive'): ?>
                 <?php if(!empty($report_data['summary'])): ?>
                 <h2>Comprehensive Report</h2>
                 <p>Total Patients: <?= $report_data['summary']['total_patients'] ?> | Total Consultations: <?= $report_data['summary']['total_consultations'] ?> | Total Appointments: <?= $report_data['summary']['total_appointments'] ?> | Total Inventory Items: <?= $report_data['summary']['total_inventory_items'] ?> | Total Announcements: <?= $report_data['summary']['total_announcements'] ?></p>

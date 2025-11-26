@@ -33,6 +33,12 @@ class ConsultationController extends BaseController
         $consult = new ConsultationModel();
 
         $service = request()->getGet('service');
+        $allowedServices = ['walkin', 'appoint'];
+
+        // Validate service parameter - default to 'appoint' if invalid
+        if(empty($service) || !in_array($service, $allowedServices)){
+            $service = 'appoint';
+        }
 
         if($service === 'walkin'){
             session()->set('service', 'walkin');

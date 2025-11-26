@@ -158,22 +158,21 @@ class UserController extends BaseController
             'role' => $role,
         ];
 
-        $hashedPassword = password_hash($newpassword, PASSWORD_DEFAULT);
-
         if(empty($oldpassword) && empty($newpassword)){
-
+            // Both passwords empty - no password update
         }
         else if(!empty($oldpassword) && !empty($newpassword)){
-            
+            // Both passwords provided - verify old and update new
             if(!$verify){
                 return redirect()->to('/edit_user/'.$id)->with('message', 'Old Password is Incorrect');
             }
                 
+            $hashedPassword = password_hash($newpassword, PASSWORD_DEFAULT);
             $data['password'] = $hashedPassword;
-
         }
         else{
-             return redirect()->to('/edit_user/'.$id)->with('message', 'Put Input both old and new password or keep them both blank');
+            // One password provided but not the other - invalid
+            return redirect()->to('/edit_user/'.$id)->with('message', 'Put Input both old and new password or keep them both blank');
         }
 
       

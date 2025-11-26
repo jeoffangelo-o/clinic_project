@@ -40,36 +40,52 @@ class AnnouncementController extends BaseController
         $a = new AnnouncementModel();
         $user = new UserModel();
 
-    $data = [
-        'title'        => request()->getPost('title'),
-        'content'      => request()->getPost('content'),
-        'posted_by'    => session()->get('user_id'),
-        'posted_at'    => date('Y-m-d H:i:s'),
-        'posted_until' => request()->getPost('posted_until'),
-        'url'          => request()->getPost('url'),
-    ];
+        $title = request()->getPost('title');
+        $content = request()->getPost('content');
+        $posted_until = request()->getPost('posted_until');
+        $url = request()->getPost('url');
 
- 
-    $a->insert($data);
-
-    //email
-
-    $title     = request()->getPost('title');
-    $url       = request()->getPost('url');
-    $posted_at = date('Y-m-d H:i:s');
-    $content   = request()->getPost('content');
-
-    $email = \Config\Services::email();
-    $allUser = $user->findAll();
-
-    $emailSent = 0;
-    $emailFailed = 0;
-
-    foreach ($allUser as $u) {
-        if(empty($u['email'])){
-            $emailFailed++;
-            continue;
+        // Validate posted_until date
+        if(empty($posted_until)){
+            return redirect()->to('/announcement/add')->with('message', 'Error: posted_until date is required');
         }
+
+        $posted_at = date('Y-m-d H:i:s');
+        
+        // Ensure posted_until is a valid date and is not in the past
+        if(!strtotime($posted_until) || strtotime($posted_until) < time()){
+            return redirect()->to('/announcement/add')->with('message', 'Error: posted_until date must be a future date');
+        }
+
+        $data = [
+            'title'        => $title,
+            'content'      => $content,
+            'posted_by'    => session()->get('user_id'),
+            'posted_at'    => $posted_at,
+            'posted_until' => $posted_until,
+            'url'          => $url,
+        ];
+
+        $a->insert($data);
+
+        //email
+        $email = \Config\Services::email();
+        $allUser = $user->findAll();
+
+        $emailSent = 0;
+        $emailFailed = 0;
+
+        foreach ($allUser as $u) {
+            if(empty($u['email'])){
+                $emailFailed++;
+                continue;
+            }
+
+            // Validate email format before sending
+            if(!filter_var($u['email'], FILTER_VALIDATE_EMAIL)){
+                $emailFailed++;
+                continue;
+            }
 
             $message = '
                 <img src="' . $url . '" alt="image" style="height: 100px; width: 80px;">
@@ -93,14 +109,14 @@ class AnnouncementController extends BaseController
             
             $email->clear(true);
         
-    }
+        }
 
    
-    $message = 'Announcement Posted Successfully';
-    if($emailFailed > 0){
-        $message .= ' | Emails Sent: ' . $emailSent . ' | Failed: ' . $emailFailed;
-    }
-    return redirect()->to('/announcement/add')->with('message', $message);
+        $message = 'Announcement Posted Successfully';
+        if($emailFailed > 0){
+            $message .= ' | Emails Sent: ' . $emailSent . ' | Failed: ' . $emailFailed;
+        }
+        return redirect()->to('/announcement/add')->with('message', $message);
     }
 
     public function edit_announcement()
