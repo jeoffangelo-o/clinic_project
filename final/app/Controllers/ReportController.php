@@ -10,6 +10,8 @@ use App\Models\ConsultationModel;
 use App\Models\InventoryModel;
 use App\Models\AnnouncementModel;
 use App\Models\AppointmentModel;
+use App\Models\UserModel;
+use App\Models\CertificateModel;
 
 class ReportController extends BaseController
 {
@@ -44,8 +46,9 @@ class ReportController extends BaseController
         $report = new ReportModel();
         $report_type = request()->getPost('report_type');
 
+        // If no report type selected, default to comprehensive (capture all data)
         if(empty($report_type)){
-            return redirect()->to('/report/generate')->with('message', 'Error: Please select a report type');
+            $report_type = 'comprehensive';
         }
 
         // Aggregate data based on report type
@@ -73,6 +76,8 @@ class ReportController extends BaseController
         $inventory = new InventoryModel();
         $announce = new AnnouncementModel();
         $appoint = new AppointmentModel();
+        $user = new UserModel();
+        $cert = new CertificateModel();
 
         $data = [];
 
@@ -107,17 +112,22 @@ class ReportController extends BaseController
                 break;
 
             case 'comprehensive':
+                // Return full contents of all major tables
                 $data['patients'] = $patient->findAll();
                 $data['consultations'] = $consult->findAll();
                 $data['inventory'] = $inventory->findAll();
                 $data['announcements'] = $announce->findAll();
                 $data['appointments'] = $appoint->findAll();
+                $data['users'] = $user->findAll();
+                $data['certificates'] = $cert->findAll();
                 $data['summary'] = [
                     'total_patients' => count($data['patients']),
                     'total_consultations' => count($data['consultations']),
                     'total_inventory_items' => count($data['inventory']),
                     'total_announcements' => count($data['announcements']),
                     'total_appointments' => count($data['appointments']),
+                    'total_users' => count($data['users']),
+                    'total_certificates' => count($data['certificates']),
                 ];
                 break;
 
@@ -158,8 +168,14 @@ class ReportController extends BaseController
 
         $data['rep'] = $rep;
 
+        // Determine report type; treat blank legacy values as 'comprehensive'
+        $report_type = trim((string) $rep['report_type']);
+        if (empty($report_type)) {
+            $report_type = 'comprehensive';
+        }
+
         // Get the aggregated data based on report type
-        $data['report_data'] = $this->generateReportData($rep['report_type']);
+        $data['report_data'] = $this->generateReportData($report_type);
 
         return view('Report/view_report', $data);
     }
@@ -276,30 +292,50 @@ class ReportController extends BaseController
                 $csv .= "Total Consultations," . $report_data['summary']['total_consultations'] . "\n";
                 $csv .= "Total Appointments," . $report_data['summary']['total_appointments'] . "\n";
                 $csv .= "Total Inventory Items," . $report_data['summary']['total_inventory_items'] . "\n";
-                $csv .= "Total Announcements," . $report_data['summary']['total_announcements'] . "\n\n";
+                $csv .= "Total Announcements," . $report_data['summary']['total_announcements'] . "\n";
+                $csv .= "Total Users," . $report_data['summary']['total_users'] . "\n";
+                $csv .= "Total Certificates," . $report_data['summary']['total_certificates'] . "\n\n";
 
                 $csv .= "--- PATIENTS ---\n";
-                $csv .= "Patient ID,Full Name,Gender,Contact\n";
+                $csv .= "Patient ID,Full Name,Gender,Contact,Created At\n";
                 foreach ($report_data['patients'] as $p) {
-                    $csv .= $p['patient_id'] . "," . $p['last_name'] . ' ' . $p['first_name'] . "," . $p['gender'] . "," . ($p['contact_no'] ?: 'N/A') . "\n";
+                    $csv .= ($p['patient_id'] ?? '') . "," . ($p['last_name'] ?? '') . ' ' . ($p['first_name'] ?? '') . "," . ($p['gender'] ?? '') . "," . ($p['contact_no'] ?: 'N/A') . "," . ($p['created_at'] ?? '') . "\n";
                 }
 
-                $csv .= "\n--- CONSULTATIONS (First 10) ---\n";
-                $csv .= "Consultation ID,Patient ID,Diagnosis,Date\n";
-                $count = 0;
+                $csv .= "\n--- CONSULTATIONS ---\n";
+                $csv .= "Consultation ID,Appointment ID,Patient ID,Diagnosis,Treatment,Date\n";
                 foreach ($report_data['consultations'] as $c) {
-                    if ($count++ < 10) {
-                        $csv .= $c['consultation_id'] . "," . $c['patient_id'] . ",\"" . substr($c['diagnosis'], 0, 100) . "\"," . $c['consultation_date'] . "\n";
-                    }
+                    $csv .= ($c['consultation_id'] ?? '') . "," . ($c['appointment_id'] ?? '') . "," . ($c['patient_id'] ?? '') . ",\"" . str_replace('"', '""', ($c['diagnosis'] ?? '')) . "\",\"" . str_replace('"', '""', ($c['treatment'] ?? '')) . "\"," . ($c['consultation_date'] ?? '') . "\n";
                 }
 
-                $csv .= "\n--- APPOINTMENTS (First 10) ---\n";
-                $csv .= "Appointment ID,Patient ID,Status,Date\n";
-                $count = 0;
+                $csv .= "\n--- APPOINTMENTS ---\n";
+                $csv .= "Appointment ID,Patient ID,Date,Purpose,Status,Remarks\n";
                 foreach ($report_data['appointments'] as $a) {
-                    if ($count++ < 10) {
-                        $csv .= $a['appointment_id'] . "," . $a['patient_id'] . "," . ucfirst($a['status']) . "," . $a['appointment_date'] . "\n";
-                    }
+                    $csv .= ($a['appointment_id'] ?? '') . "," . ($a['patient_id'] ?? '') . "," . ($a['appointment_date'] ?? '') . ",\"" . str_replace('"', '""', ($a['purpose'] ?? '')) . "\"," . ($a['status'] ?? '') . ",\"" . str_replace('"', '""', ($a['remarks'] ?? '')) . "\"\n";
+                }
+
+                $csv .= "\n--- INVENTORY ---\n";
+                $csv .= "Item ID,Item Name,Category,Quantity,Unit,Expiry Date,Description\n";
+                foreach ($report_data['inventory'] as $i) {
+                    $csv .= ($i['item_id'] ?? '') . ",\"" . str_replace('"', '""', ($i['item_name'] ?? '')) . "\"," . ($i['category'] ?? '') . "," . ($i['quantity'] ?? '') . ",\"" . ($i['unit'] ?? 'N/A') . "\"," . ($i['expiry_date'] ?? 'N/A') . ",\"" . str_replace('"', '""', ($i['description'] ?? '')) . "\"\n";
+                }
+
+                $csv .= "\n--- ANNOUNCEMENTS ---\n";
+                $csv .= "Announcement ID,Title,Posted By,Posted At,Posted Until,URL\n";
+                foreach ($report_data['announcements'] as $an) {
+                    $csv .= ($an['announcement_id'] ?? '') . ",\"" . str_replace('"', '""', ($an['title'] ?? '')) . "\"," . ($an['posted_by'] ?? '') . "," . ($an['posted_at'] ?? '') . "," . ($an['posted_until'] ?? '') . ",\"" . ($an['url'] ?? '') . "\"\n";
+                }
+
+                $csv .= "\n--- USERS ---\n";
+                $csv .= "User ID,Username,Email,Role,Created At\n";
+                foreach ($report_data['users'] as $u) {
+                    $csv .= ($u['user_id'] ?? '') . ",\"" . str_replace('"', '""', ($u['username'] ?? '')) . "\",\"" . ($u['email'] ?? '') . "\"," . ($u['role'] ?? '') . "," . ($u['created_at'] ?? '') . "\n";
+                }
+
+                $csv .= "\n--- CERTIFICATES ---\n";
+                $csv .= "Certificate ID,Consultation ID,Patient ID,Type,Issued By,Issued Date,Validity Start,Validity End,File Path\n";
+                foreach ($report_data['certificates'] as $cft) {
+                    $csv .= ($cft['certificate_id'] ?? '') . "," . ($cft['consultation_id'] ?? '') . "," . ($cft['patient_id'] ?? '') . "," . ($cft['certificate_type'] ?? '') . "," . ($cft['issued_by'] ?? '') . "," . ($cft['issued_date'] ?? '') . "," . ($cft['validity_start'] ?? '') . "," . ($cft['validity_end'] ?? '') . ",\"" . ($cft['file_path'] ?? '') . "\"\n";
                 }
                 break;
         }
