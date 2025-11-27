@@ -7,6 +7,9 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ConsultationModel;
 use App\Models\AppointmentModel;
 use App\Models\PatientModel;
+use App\Models\InventoryModel;
+use App\Models\ConsultationMedicineModel;
+use App\Models\InventoryLogModel;
 
 class ConsultationController extends BaseController
 {
@@ -18,8 +21,28 @@ class ConsultationController extends BaseController
         }
 
         $consult = new ConsultationModel();
+        $medicineModel = new ConsultationMedicineModel();
+        $inventoryModel = new InventoryModel();
 
-        $data['consult'] = $consult->findAll();
+        $consultations = $consult->findAll();
+        
+        // Fetch medicines for each consultation
+        foreach($consultations as &$c) {
+            $medicines = $medicineModel->where('consultation_id', $c['consultation_id'])->findAll();
+            $c['medicines'] = [];
+            foreach($medicines as $med) {
+                $item = $inventoryModel->find($med['item_id']);
+                if($item) {
+                    $c['medicines'][] = [
+                        'item_name' => $item['item_name'],
+                        'quantity_used' => $med['quantity_used'],
+                        'unit' => $med['unit']
+                    ];
+                }
+            }
+        }
+
+        $data['consult'] = $consultations;
 
         return view('Consultation/consultation', $data);
     }
@@ -104,6 +127,10 @@ class ConsultationController extends BaseController
         }
 
          $consult->insert($data);
+         $newConsultId = $consult->getInsertID();
+
+         // Handle medicine allocation if provided
+         $this->allocateMedicines($newConsultId);
 
          return redirect()->to('/consultation/add/?service='.session()->get('service'))->with('message', 'Consultation Added Successfully');
     }
@@ -115,11 +142,27 @@ class ConsultationController extends BaseController
         }
 
         $consult = new ConsultationModel();
+        $medicineModel = new ConsultationMedicineModel();
+        $inventoryModel = new InventoryModel();
 
         $data['consult'] = $consult->find($id);
 
         if(!$data['consult']){
             return redirect()->to('/consultation')->with('message', 'Error: Consultation not found');
+        }
+
+        // Fetch medicines for this consultation
+        $medicines = $medicineModel->where('consultation_id', $id)->findAll();
+        $data['medicines'] = [];
+        foreach($medicines as $med) {
+            $item = $inventoryModel->find($med['item_id']);
+            if($item) {
+                $data['medicines'][] = [
+                    'item_name' => $item['item_name'],
+                    'quantity_used' => $med['quantity_used'],
+                    'unit' => $med['unit']
+                ];
+            }
         }
 
         return view('Consultation/edit_consultation', $data);
@@ -152,18 +195,96 @@ class ConsultationController extends BaseController
         }
 
         $consult = new ConsultationModel();
+        $consult_med = new ConsultationMedicineModel();
+        $inventory = new InventoryModel();
+        $inv_log = new InventoryLogModel();
 
         $exist = $consult->find($id);
         if(!$exist){
             return redirect()->to('/consultation')->with('message', 'Error: Consultation not found');
         }
 
+        // Rollback inventory for any medicines allocated to this consultation
+        $medicines = $consult_med->where('consultation_id', $id)->findAll();
+        foreach ($medicines as $med) {
+            // Restore inventory
+            $inventory->set('quantity', 'quantity + ' . $med['quantity_used'], false)->where('item_id', $med['item_id'])->update();
+            
+            // Log the rollback
+            $inv_log->insert([
+                'item_id' => $med['item_id'],
+                'quantity_change' => $med['quantity_used'],
+                'reason' => 'consultation',
+                'related_consultation_id' => $id,
+                'logged_by' => session()->get('user_id'),
+                'notes' => 'Rollback - Consultation deleted'
+            ]);
+        }
+
+        // Delete consultation (cascade will delete consultation_medicines entries)
         $consult->delete($id);
 
         return redirect()->to('/consultation')->with('message', 'Consultation Deleted Successfully');
     }
 
-     
+    /**
+     * Allocate medicines to a consultation and decrement inventory
+     */
+    private function allocateMedicines($consultation_id)
+    {
+        $medicines_json = request()->getPost('medicines'); // JSON string from form
+        if (empty($medicines_json)) {
+            return;
+        }
 
+        $medicines = json_decode($medicines_json, true);
+        if (empty($medicines) || !is_array($medicines)) {
+            return;
+        }
 
+        $consult_med = new ConsultationMedicineModel();
+        $inventory = new InventoryModel();
+        $inv_log = new InventoryLogModel();
+
+        foreach ($medicines as $item_id => $quantity) {
+            $item_id = (int) $item_id;
+            $quantity = (int) $quantity;
+            if ($quantity <= 0) {
+                continue;
+            }
+
+            // Get the item to check available quantity and get unit
+            $item = $inventory->find($item_id);
+            if (!$item) {
+                continue;
+            }
+
+            // Check if enough stock
+            if ($item['quantity'] < $quantity) {
+                log_message('warning', "Insufficient inventory for item $item_id. Available: {$item['quantity']}, Requested: $quantity");
+                continue;
+            }
+
+            // Record the medicine in consultation_medicines
+            $consult_med->insert([
+                'consultation_id' => $consultation_id,
+                'item_id' => $item_id,
+                'quantity_used' => $quantity,
+                'unit' => $item['unit']
+            ]);
+
+            // Decrement inventory
+            $inventory->set('quantity', 'quantity - ' . $quantity, false)->where('item_id', $item_id)->update();
+
+            // Log the consumption
+            $inv_log->insert([
+                'item_id' => $item_id,
+                'quantity_change' => -$quantity,
+                'reason' => 'consultation',
+                'related_consultation_id' => $consultation_id,
+                'logged_by' => session()->get('user_id'),
+                'notes' => "Used in consultation #{$consultation_id}"
+            ]);
+        }
+    }
 }

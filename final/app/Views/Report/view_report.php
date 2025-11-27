@@ -39,11 +39,8 @@
         <br><br>
 
         <?php 
-        $report_type = trim($rep['report_type']);
-        // Treat empty report_type as 'comprehensive' for legacy/empty entries
-        if(empty($report_type)){
-            $report_type = 'comprehensive';
-        }
+        $report_type = strtolower(trim($rep['report_type']));
+        // If stored report_type is blank, show a chooser to let the user select which report type to render.
         // Ensure all expected keys exist with defaults
         $report_data = array_merge([
             'patients' => [],
@@ -64,7 +61,25 @@
         ], $report_data ?? []);
         ?>
 
-        <?php if(!empty($report_data)): ?>
+        <?php if(empty($report_type)): ?>
+            <h2>Report type not set</h2>
+            <p>This report was created before report types were required. Choose which report type you want this record to represent (this will update the report row):</p>
+            <form action="<?= base_url('/report/set_report_type/'.$rep['report_id']) ?>" method="post">
+                <?= csrf_field() ?>
+                <label for="report_type">Report Type:</label>
+                <select name="report_type" id="report_type" required>
+                    <option value="">-- Select --</option>
+                    <option value="patient">Patient</option>
+                    <option value="consultation">Consultation</option>
+                    <option value="appointment">Appointment</option>
+                    <option value="inventory">Inventory</option>
+                    <option value="announcement">Announcement</option>
+                    <option value="comprehensive">Comprehensive (All Data)</option>
+                </select>
+                <button type="submit">Set and View</button>
+            </form>
+
+        <?php elseif(!empty($report_data)): ?>
 
             <?php if($report_type === 'patient'): ?>
                 <?php if(!empty($report_data['patients'])): ?>
@@ -99,7 +114,7 @@
             <?php if($report_type === 'consultation'): ?>
                 <?php if(!empty($report_data['consultations'])): ?>
                 <h2>Consultation Report</h2>
-                <p>Total Consultations: <?= $report_data['total_consultations'] ?></p>
+                <p>Total Consultations: <?= esc($report_data['total_consultations']) ?></p>
                 <table border='1'>
                     <tr>
                         <th>Consultation ID</th>
@@ -112,7 +127,7 @@
                     <tr>
                         <td><?= esc($c['consultation_id']) ?></td>
                         <td><?= esc($c['patient_id']) ?></td>
-                        <td><?= esc(substr($c['diagnosis'], 0, 50)) ?>...</td>
+                        <td><?= esc($c['diagnosis']) ?></td>
                         <td><?= esc($c['treatment'] ?: 'N/A') ?></td>
                         <td><?= esc($c['consultation_date']) ?></td>
                     </tr>
@@ -127,7 +142,7 @@
             <?php if($report_type === 'appointment'): ?>
                 <?php if(!empty($report_data['appointments'])): ?>
                 <h2>Appointment Report</h2>
-                <p>Total Appointments: <?= $report_data['total_appointments'] ?> | Pending: <?= count($report_data['pending']) ?> | Approved: <?= count($report_data['approved']) ?> | Completed: <?= count($report_data['completed']) ?></p>
+                <p>Total Appointments: <?= esc($report_data['total_appointments']) ?> | Pending: <?= esc(count($report_data['pending'])) ?> | Approved: <?= esc(count($report_data['approved'])) ?> | Completed: <?= esc(count($report_data['completed'])) ?></p>
                 <table border='1'>
                     <tr>
                         <th>Appointment ID</th>
@@ -185,7 +200,7 @@
             <?php if($report_type === 'announcement'): ?>
                 <?php if(!empty($report_data['announcements'])): ?>
                 <h2>Announcement Report</h2>
-                <p>Total Announcements: <?= $report_data['total_announcements'] ?></p>
+                <p>Total Announcements: <?= esc($report_data['total_announcements']) ?></p>
                 <table border='1'>
                     <tr>
                         <th>Announcement ID</th>
@@ -237,45 +252,53 @@
                 <p>No patients found</p>
                 <?php endif; ?>
 
-                <h3>Recent Consultations</h3>
+                <h3>Consultations</h3>
                 <?php if(!empty($report_data['consultations'])): ?>
                 <table border='1'>
                     <tr>
                         <th>Consultation ID</th>
+                        <th>Appointment ID</th>
                         <th>Patient ID</th>
                         <th>Diagnosis</th>
+                        <th>Treatment</th>
                         <th>Date</th>
                     </tr>
-                    <?php $count = 0; foreach($report_data['consultations'] as $c): if($count++ < 10): ?>
+                    <?php foreach($report_data['consultations'] as $c): ?>
                     <tr>
                         <td><?= esc($c['consultation_id']) ?></td>
+                        <td><?= esc($c['appointment_id'] ?? 'N/A') ?></td>
                         <td><?= esc($c['patient_id']) ?></td>
-                        <td><?= esc(substr($c['diagnosis'], 0, 50)) ?>...</td>
+                        <td><?= esc($c['diagnosis']) ?></td>
+                        <td><?= esc($c['treatment'] ?: 'N/A') ?></td>
                         <td><?= esc($c['consultation_date']) ?></td>
                     </tr>
-                    <?php endif; endforeach; ?>
+                    <?php endforeach; ?>
                 </table>
                 <?php else: ?>
                 <p>No consultations found</p>
                 <?php endif; ?>
 
-                <h3>Appointments Overview</h3>
+                <h3>Appointments</h3>
                 <?php if(!empty($report_data['appointments'])): ?>
                 <table border='1'>
                     <tr>
                         <th>Appointment ID</th>
                         <th>Patient ID</th>
-                        <th>Status</th>
                         <th>Date</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
                     </tr>
-                    <?php $count = 0; foreach($report_data['appointments'] as $a): if($count++ < 10): ?>
+                    <?php foreach($report_data['appointments'] as $a): ?>
                     <tr>
                         <td><?= esc($a['appointment_id']) ?></td>
                         <td><?= esc($a['patient_id']) ?></td>
-                        <td><?= esc(ucfirst($a['status'])) ?></td>
                         <td><?= esc($a['appointment_date']) ?></td>
+                        <td><?= esc($a['purpose'] ?: 'N/A') ?></td>
+                        <td><?= esc(ucfirst($a['status'])) ?></td>
+                        <td><?= esc($a['remarks'] ?? 'N/A') ?></td>
                     </tr>
-                    <?php endif; endforeach; ?>
+                    <?php endforeach; ?>
                 </table>
                 <?php else: ?>
                 <p>No appointments found</p>
@@ -289,8 +312,12 @@
         <?php endif; ?>
 
         <br><br>
-        <button><a href="<?= base_url('/report/export/'.$rep['report_id']) ?>">Export as CSV</a></button>
-        <a href="<?= base_url('/report/delete/'.$rep['report_id']) ?>" onclick="return confirm('Are you sure?')">Delete Report</a>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <a class="btn" href="<?= base_url('/report/export/'.$rep['report_id']) ?>">Export CSV</a>
+            <a class="btn" href="<?= base_url('/report/export/'.$rep['report_id']) ?>?format=xlsx">Export Excel</a>
+            <a class="btn" href="<?= base_url('/report/export/'.$rep['report_id']) ?>?format=pdf">Export PDF</a>
+            <a class="btn btn-danger" href="<?= base_url('/report/delete/'.$rep['report_id']) ?>" onclick="return confirm('Are you sure you want to delete this report?')">Delete Report</a>
+        </div>
 
     <?php else: ?>
         <p>Report not found</p>

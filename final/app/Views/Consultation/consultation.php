@@ -31,6 +31,18 @@
                 <p><strong>Prescription:</strong> <?= esc($c['prescription']) ?> </p>
                 <p><strong>Notes:</strong> <?= ($c['notes'] === null || $c['notes'] === '') ? 'None' : esc($c['notes']) ?> </p>
                 <p><strong>Consultation Date:</strong> <?= esc($c['consultation_date']) ?> </p>
+                
+                <?php if(!empty($c['medicines'])): ?>
+                    <p><strong>Medicines Used:</strong></p>
+                    <ul>
+                        <?php foreach($c['medicines'] as $med): ?>
+                            <li><?= esc($med['item_name']) ?> - <?= esc($med['quantity_used']) ?> <?= esc($med['unit']) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p><strong>Medicines Used:</strong> None</p>
+                <?php endif; ?>
+                
                 <button><a href="<?= base_url('/consultation/edit/'.$c['consultation_id']) ?>">Edit</a></button>
                 <button><a href="<?= base_url('/consultation/delete/'.$c['consultation_id']) ?>">Delete</a></button>
             </div>

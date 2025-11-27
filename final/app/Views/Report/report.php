@@ -8,7 +8,23 @@
 <body>
     <h1>Manage Reports</h1>
 
-    <button><a href="/report/generate">Generate New Report</a></button>
+    <h2>Generate New Report</h2>
+    <form action="<?= base_url('/report/store') ?>" method="post">
+        <?= csrf_field() ?>
+        <label for="report_type">Report Type:</label>
+        <select name="report_type" id="report_type" required>
+            <option value="">-- Select --</option>
+            <option value="patient">Patient</option>
+            <option value="consultation">Consultation</option>
+            <option value="appointment">Appointment</option>
+            <option value="inventory">Inventory</option>
+            <option value="announcement">Announcement</option>
+            <option value="comprehensive">Comprehensive (All Data)</option>
+        </select>
+        <label for="file_path">File Path (optional):</label>
+        <input type="text" name="file_path" id="file_path" placeholder="e.g. /reports/snapshot.csv">
+        <button type="submit">Generate</button>
+    </form>
 
     <h2>List of Reports</h2>
 

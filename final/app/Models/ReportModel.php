@@ -12,6 +12,7 @@ class ReportModel extends Model
     protected $allowedFields    = [
         'generated_by',
         'report_type',
-        'file_path'
+        'file_path',
+        'report_data'
     ];
 }

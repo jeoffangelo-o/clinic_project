@@ -28,6 +28,18 @@
             <label for="">Notes:</label>
             <input type="text" name="notes" id="" value="<?=  $consult['notes'] ?>" ><br><br>
             
+            <?php if(!empty($medicines)): ?>
+                <p><strong>Medicines Used in this Consultation:</strong></p>
+                <ul>
+                    <?php foreach($medicines as $med): ?>
+                        <li><?= esc($med['item_name']) ?> - <?= esc($med['quantity_used']) ?> <?= esc($med['unit']) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p><strong>Medicines Used:</strong> None allocated</p>
+            <?php endif; ?>
+            <br>
+            
             <input type="submit" value="Update Consultation"> 
 
         </form>
