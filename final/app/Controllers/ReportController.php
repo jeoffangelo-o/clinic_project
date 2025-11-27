@@ -24,7 +24,7 @@ class ReportController extends BaseController
         }
 
         $report = new ReportModel();
-        $data['report'] = $report->findAll();
+        $data['report'] = $report->orderBy('report_id', 'DESC')->findAll();
 
         return view('Report/report', $data);
     }
@@ -126,6 +126,41 @@ class ReportController extends BaseController
         $reportModel->delete($id);
 
         return redirect()->to('/report')->with('message', 'Report #' . $id . ' Deleted Successfully');
+    }
+
+    public function bulk_delete()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        $report_ids = $this->request->getPost('report_ids');
+
+        if (!is_array($report_ids) || empty($report_ids)) {
+            return redirect()->to('/report')->with('message', 'Error: No reports selected for deletion');
+        }
+
+        // Validate that all IDs are numeric to prevent SQL injection
+        foreach($report_ids as $id) {
+            if (!is_numeric($id)) {
+                return redirect()->to('/report')->with('message', 'Error: Invalid report ID');
+            }
+        }
+
+        $reportModel = new ReportModel();
+        $deletedCount = 0;
+
+        // Delete each selected report
+        foreach($report_ids as $id) {
+            $exist = $reportModel->find($id);
+            if ($exist) {
+                $reportModel->delete($id);
+                $deletedCount++;
+            }
+        }
+
+        $message = $deletedCount . ' report(s) deleted successfully';
+        return redirect()->to('/report')->with('message', $message);
     }
 
     public function export_report($id)

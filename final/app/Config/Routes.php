@@ -75,6 +75,7 @@ $routes->get('/inventory/delete/(:num)', 'InventoryController::delete_inventory/
 $routes->get('/report', 'ReportController::report');
 $routes->get('/report/generate', 'ReportController::generate_report');
 $routes->post('/report/store', 'ReportController::store_report');
+$routes->post('/report/bulk-delete', 'ReportController::bulk_delete');
 
 $routes->get('/report/view/(:num)', 'ReportController::view_report/$1');
 $routes->get('/report/export/(:num)', 'ReportController::export_report/$1');
