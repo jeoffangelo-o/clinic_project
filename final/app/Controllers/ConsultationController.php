@@ -53,8 +53,6 @@ class ConsultationController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
-        $consult = new ConsultationModel();
-
         $service = request()->getGet('service');
         $allowedServices = ['walkin', 'appoint'];
 
@@ -70,7 +68,21 @@ class ConsultationController extends BaseController
             session()->set('service', 'appoint');
         }
 
-        return view('Consultation/add_consultation');
+        // Fetch approved appointments with patient info
+        $appointmentModel = new AppointmentModel();
+        $data['appointments'] = $appointmentModel
+            ->where('status', 'approved')
+            ->select('appointments.appointment_id, appointments.patient_id, appointments.appointment_date, patients.first_name, patients.last_name')
+            ->join('patients', 'patients.patient_id = appointments.patient_id', 'left')
+            ->orderBy('appointments.appointment_date', 'DESC')
+            ->findAll();
+
+        // Combine first and last name for display
+        foreach($data['appointments'] as &$appt) {
+            $appt['patient_name'] = trim(($appt['first_name'] ?? '') . ' ' . ($appt['last_name'] ?? ''));
+        }
+
+        return view('Consultation/add_consultation', $data);
     }
 
     public function store_consultation()

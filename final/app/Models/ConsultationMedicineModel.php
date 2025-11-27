@@ -12,7 +12,7 @@ class ConsultationMedicineModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $allowedFields = ['consultation_id', 'item_id', 'quantity_used', 'unit'];
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat = 'datetime';
     protected $createdField = 'created_at';
     protected $updatedField = null;

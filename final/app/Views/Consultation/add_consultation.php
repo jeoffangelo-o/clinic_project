@@ -37,8 +37,21 @@
 
                 <input type="hidden" name="service" value="appoint">
 
-                <label for="">Appointment ID:</label>
-                <input type="number" name="appointment_id" id="" required>
+                <label for="appointment_id">Appointment ID:</label>
+                <select name="appointment_id" id="appointment_id" required onchange="updatePatientFromAppt()">
+                    <option value="">-- Select Approved Appointment --</option>
+                    <?php if(!empty($appointments)): ?>
+                        <?php foreach($appointments as $appt): ?>
+                            <option value="<?= esc($appt['appointment_id']) ?>" data-patient-id="<?= esc($appt['patient_id']) ?>" data-patient-name="<?= esc($appt['patient_name']) ?>">
+                                #<?= esc($appt['appointment_id']) ?> - <?= esc($appt['patient_name']) ?> (<?= esc($appt['appointment_date']) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <option value="">No approved appointments available</option>
+                    <?php endif; ?>
+                </select>
+                <br>
+                <small style="color: #666;">Selected Patient: <span id="selectedPatientName">None</span></small>
 
             <?php endif; ?>
             
@@ -170,6 +183,13 @@
             }
 
             return true;
+        }
+
+        function updatePatientFromAppt() {
+            const select = document.getElementById('appointment_id');
+            const selectedOption = select.options[select.selectedIndex];
+            const patientName = selectedOption.getAttribute('data-patient-name') || 'None';
+            document.getElementById('selectedPatientName').textContent = patientName;
         }
     </script>
 
