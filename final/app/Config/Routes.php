@@ -51,6 +51,9 @@ $routes->get('/consultation/delete/(:num)', 'ConsultationController::delete_cons
 $routes->get('/announcement', 'AnnouncementController::announcement');
 $routes->get('/announcement/add', 'AnnouncementController::add_announcement');
 $routes->post('/announcement/store', 'AnnouncementController::store_announcement');
+$routes->get('/announcement/edit/(:num)', 'AnnouncementController::edit_announcement/$1');
+$routes->post('/announcement/update/(:num)', 'AnnouncementController::update_announcement/$1');
+$routes->get('/announcement/delete/(:num)', 'AnnouncementController::delete_announcement/$1');
 
 
 $routes->get('/certificate', 'CertificateController::certificate');
@@ -61,6 +64,7 @@ $routes->get('/certificate/view/(:num)', 'CertificateController::view_certificat
 $routes->get('/certificate/edit/(:num)', 'CertificateController::edit_certificate/$1');
 $routes->post('/certificate/update/(:num)', 'CertificateController::update_certificate/$1');
 $routes->get('/certificate/delete/(:num)', 'CertificateController::delete_certificate/$1');
+$routes->get('/certificate/export-pdf/(:num)', 'CertificateController::export_pdf/$1');
 
 
 $routes->get('/inventory', 'InventoryController::inventory');

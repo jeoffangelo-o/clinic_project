@@ -110,8 +110,9 @@ class UserController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
-        if (session()->get('role') !== 'admin') {
-            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        // Allow users to edit their own info, or admins to edit anyone
+        if (session()->get('user_id') != $id && session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('message', 'You can only edit your own information');
         }
 
         $user = new UserModel();
@@ -119,7 +120,7 @@ class UserController extends BaseController
         $data['user'] = $user->find($id);
 
         if(!$data['user']){
-            return redirect()->to('/list_user')->with('message', 'Error: User not found');
+            return redirect()->to('/')->with('message', 'Error: User not found');
         }
 
         return view('Admin/edit_user', $data);
@@ -130,8 +131,9 @@ class UserController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
-        if (session()->get('role') !== 'admin') {
-            return redirect()->to('/')->with('message', 'You do not have permission to access this page');
+        // Allow users to edit their own info, or admins to edit anyone
+        if (session()->get('user_id') != $id && session()->get('role') !== 'admin') {
+            return redirect()->to('/')->with('message', 'You can only edit your own information');
         }
 
         $user = new UserModel();
@@ -141,7 +143,7 @@ class UserController extends BaseController
         $exist = $user->where('user_id', $id)->first();
 
         if(!$exist){
-            return redirect()->to('/list_user')->with('message', 'Error: User not found');
+            return redirect()->to('/')->with('message', 'Error: User not found');
         }
 
         $verify = password_verify($password, $exist['password']);
@@ -155,8 +157,12 @@ class UserController extends BaseController
         $data = [
             'username' => $username,
             'email' => $email,
-            'role' => $role,
         ];
+
+        // Only admins can change role, users can only edit their own
+        if(session()->get('role') === 'admin'){
+            $data['role'] = $role;
+        }
 
         if(empty($oldpassword) && empty($newpassword)){
             // Both passwords empty - no password update

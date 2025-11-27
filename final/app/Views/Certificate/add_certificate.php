@@ -1,51 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Medical Certificate</title>
-</head>
-<body>
-    <h1>Add Medical Certificate</h1>
+<?= $this->extend('layouts/sidebar') ?>
+<?= $this->section('mainContent') ?>
 
-    <?php if(session()->getFlashData('message')): ?>
-        <p><?= session()->getFlashData('message') ?></p>
-    <?php endif; ?>
+<div class="page-header d-print-none">
+    <h2 class="page-title">Add Medical Certificate</h2>
+</div>
 
-    <form action="/certificate/store" method="post">
-        <?= csrf_field() ?>
-        <label for="patient_id">Patient ID:</label>
-        <input type="number" name="patient_id" id="patient_id" required><br><br>
+<?php if(session()->getFlashData('message')): ?>
+    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
+<?php endif; ?>
 
-        <label for="consultation_id">Consultation ID (optional):</label>
-        <input type="number" name="consultation_id" id="consultation_id"><br><br>
+<div class="card">
+    <div class="card-body">
+        <form action="/certificate/store" method="post">
+                    <?= csrf_field() ?>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Patient ID <span class="text-danger">*</span></label>
+                        <input type="number" name="patient_id" class="form-control" required>
+                    </div>
 
-        <label for="certificate_type">Certificate Type:</label>
-        <select name="certificate_type" id="certificate_type" required>
-            <option value="">--Select--</option>
-            <option value="fit_to_study">Fit to Study</option>
-            <option value="medical_leave">Medical Leave</option>
-            <option value="injury_report">Injury Report</option>
-            <option value="others">Others</option>
-        </select><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Consultation ID</label>
+                        <input type="number" name="consultation_id" class="form-control">
+                        <small class="text-muted">Optional - reference to consultation</small>
+                    </div>
 
-        <label for="diagnosis_summary">Diagnosis Summary:</label>
-        <textarea name="diagnosis_summary" id="diagnosis_summary" rows="4" cols="50"></textarea><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Certificate Type <span class="text-danger">*</span></label>
+                        <select name="certificate_type" class="form-select" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="fit_to_study">Fit to Study</option>
+                            <option value="medical_leave">Medical Leave</option>
+                            <option value="injury_report">Injury Report</option>
+                            <option value="others">Others</option>
+                        </select>
+                    </div>
 
-        <label for="recommendation">Recommendation:</label>
-        <textarea name="recommendation" id="recommendation" rows="4" cols="50"></textarea><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Diagnosis Summary</label>
+                        <textarea name="diagnosis_summary" class="form-control" rows="3"></textarea>
+                    </div>
 
-        <label for="validity_start">Validity Start Date:</label>
-        <input type="date" name="validity_start" id="validity_start"><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Recommendation</label>
+                        <textarea name="recommendation" class="form-control" rows="3"></textarea>
+                    </div>
 
-        <label for="validity_end">Validity End Date:</label>
-        <input type="date" name="validity_end" id="validity_end"><br><br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Validity Start Date</label>
+                                <input type="date" name="validity_start" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Validity End Date</label>
+                                <input type="date" name="validity_end" class="form-control">
+                            </div>
+                        </div>
+                    </div>
 
-        <label for="file_path">File Path (optional):</label>
-        <input type="text" name="file_path" id="file_path"><br><br>
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Add Certificate
+                        </button>
+                        <a href="/certificate" class="btn btn-link">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <input type="submit" value="Add Certificate">
-        
-    </form>
-</body>
-</html>
+<?= $this->endSection() ?>

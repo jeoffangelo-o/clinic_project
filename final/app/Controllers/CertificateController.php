@@ -140,4 +140,41 @@ class CertificateController extends BaseController
 
         return redirect()->to('/certificate')->with('message', 'Certificate #' . $id . ' Deleted Successfully');
     }
+
+    public function export_pdf($id)
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        $cert = new CertificateModel();
+        $patient = new PatientModel();
+
+        $data['cert'] = $cert->find($id);
+
+        if(!$data['cert']){
+            return redirect()->to('/certificate')->with('message', 'Error: Certificate not found');
+        }
+
+        $data['patient'] = $patient->find($data['cert']['patient_id']);
+
+        // Get issuer details
+        $userModel = new \App\Models\UserModel();
+        $data['issuer'] = $userModel->find($data['cert']['issued_by']);
+
+        // Generate PDF using MPDF
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+            'margin_left' => 15,
+            'margin_right' => 15,
+        ]);
+
+        $html = view('Certificate/certificate_pdf', $data);
+        $mpdf->WriteHTML($html);
+        $filename = 'Certificate_' . $data['cert']['certificate_id'] . '_' . date('Ymd_His') . '.pdf';
+        $mpdf->Output($filename, 'D');
+    }
 }

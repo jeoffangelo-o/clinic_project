@@ -344,127 +344,42 @@ class ConsultationController extends BaseController
         $medicines = $medicineModel->where('consultation_id', $consultation_id)->findAll();
         $medicinesList = '';
         if(!empty($medicines)){
+            $medicinesList .= '<h4>Prescribed Medicines:</h4><ul>';
             foreach($medicines as $med) {
                 $item = $inventoryModel->find($med['item_id']);
                 if($item) {
-                    $medicinesList .= '<div class="medicine-item">💊 ' . esc($item['item_name']) . ' - ' . esc($med['quantity_used']) . ' ' . esc($med['unit']) . '</div>';
+                    $medicinesList .= '<li>' . $item['item_name'] . ' - ' . $med['quantity_used'] . ' ' . $med['unit'] . '</li>';
                 }
             }
+            $medicinesList .= '</ul>';
         }
 
-        // Build consultation summary with professional HTML email template
+        // Build consultation summary
         $message = '
-        <!DOCTYPE html>
-        <html style="margin: 0; padding: 0;">
-        <head>
-            <meta charset="utf-8">
-            <style>
-                body { font-family: Segoe UI, Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-                .email-container { max-width: 700px; margin: 0 auto; background-color: #ffffff; }
-                .header { background: linear-gradient(135deg, #206bc4 0%, #1a54a0 100%); padding: 30px; text-align: center; color: white; }
-                .header-logo { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
-                .header-subtitle { font-size: 13px; opacity: 0.9; }
-                .content { padding: 30px; }
-                .greeting { font-size: 18px; color: #206bc4; font-weight: 600; margin-bottom: 5px; }
-                .intro-text { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-                .consultation-date-box { background: linear-gradient(135deg, #206bc4 0%, #1a54a0 100%); color: white; padding: 15px; border-radius: 6px; margin: 20px 0; text-align: center; }
-                .consultation-date-box .date { font-size: 16px; font-weight: 600; }
-                .section-box { background-color: #f8f9fa; border-left: 4px solid #206bc4; padding: 15px; margin: 15px 0; border-radius: 4px; }
-                .section-title { color: #206bc4; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-                .section-content { color: #333; font-size: 14px; line-height: 1.6; }
-                .medicine-list { margin-top: 10px; }
-                .medicine-item { color: #333; font-size: 13px; padding: 8px; background-color: white; margin: 5px 0; border-left: 3px solid #206bc4; padding-left: 12px; }
-                .divider { border-top: 1px solid #e0e0e0; margin: 20px 0; }
-                .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #e0e0e0; }
-                .footer-logo { color: #206bc4; font-weight: 600; font-size: 14px; margin-bottom: 5px; }
-                .notice { background-color: #e7f3ff; border-left: 4px solid #206bc4; padding: 12px; margin: 15px 0; border-radius: 4px; font-size: 13px; color: #206bc4; }
-            </style>
-        </head>
-        <body>
-            <div class="email-container">
-                <!-- Header -->
-                <div class="header">
-                    <div class="header-logo">🏥 CSPC</div>
-                    <div class="header-subtitle">Clinic Management System</div>
-                </div>
+            <h2>Consultation Summary</h2>
+            <p>Dear ' . $userInfo['username'] . ',</p><br>
+            <p>Your consultation has been completed. Below is a copy of your consultation details:</p><br>
+            
+            <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 15px 0;">
+                <p><strong>Consultation Date:</strong> ' . date('F d, Y g:i A', strtotime($consultationInfo['consultation_date'])) . '</p>
+            </div><br>
 
-                <!-- Content -->
-                <div class="content">
-                    <div class="greeting">Hello ' . esc($userInfo['username']) . ',</div>
-                    <p class="intro-text">Your consultation has been completed. Below is a detailed summary of your consultation with CSPC Clinic.</p>
+            <h3>Diagnosis</h3>
+            <p>' . (!empty($consultationInfo['diagnosis']) ? nl2br($consultationInfo['diagnosis']) : 'N/A') . '</p><br>
 
-                    <!-- Consultation Date -->
-                    <div class="consultation-date-box">
-                        <div class="date">📅 ' . date('F d, Y g:i A', strtotime($consultationInfo['consultation_date'])) . '</div>
-                    </div>
+            <h3>Treatment</h3>
+            <p>' . (!empty($consultationInfo['treatment']) ? nl2br($consultationInfo['treatment']) : 'N/A') . '</p><br>
 
-                    <!-- Diagnosis Section -->
-                    <div class="section-box">
-                        <div class="section-title">📋 Diagnosis</div>
-                        <div class="section-content">
-                            ' . (!empty($consultationInfo['diagnosis']) ? esc($consultationInfo['diagnosis']) : '<em style="color: #999;">No diagnosis recorded</em>') . '
-                        </div>
-                    </div>
+            <h3>Prescription</h3>
+            <p>' . (!empty($consultationInfo['prescription']) ? nl2br($consultationInfo['prescription']) : 'N/A') . '</p><br>
 
-                    <!-- Treatment Section -->
-                    <div class="section-box">
-                        <div class="section-title">💊 Treatment Plan</div>
-                        <div class="section-content">
-                            ' . (!empty($consultationInfo['treatment']) ? esc($consultationInfo['treatment']) : '<em style="color: #999;">No treatment plan recorded</em>') . '
-                        </div>
-                    </div>
+            ' . $medicinesList . '
 
-                    <!-- Prescription Section -->
-                    <div class="section-box">
-                        <div class="section-title">📝 Prescription</div>
-                        <div class="section-content">
-                            ' . (!empty($consultationInfo['prescription']) ? esc($consultationInfo['prescription']) : '<em style="color: #999;">No prescription recorded</em>') . '
-                        </div>
-                    </div>
+            <h3>Notes</h3>
+            <p>' . (!empty($consultationInfo['notes']) ? nl2br($consultationInfo['notes']) : 'N/A') . '</p><br>
 
-                    <!-- Medicines Section -->
-                    ' . (!empty($medicinesList) ? '
-                    <div class="section-box">
-                        <div class="section-title">💉 Prescribed Medicines</div>
-                        <div class="medicine-list">
-                            ' . $medicinesList . '
-                        </div>
-                    </div>
-                    ' : '') . '
-
-                    <!-- Notes Section -->
-                    ' . (!empty($consultationInfo['notes']) ? '
-                    <div class="section-box">
-                        <div class="section-title">📌 Additional Notes</div>
-                        <div class="section-content">
-                            ' . esc($consultationInfo['notes']) . '
-                        </div>
-                    </div>
-                    ' : '') . '
-
-                    <!-- Important Notice -->
-                    <div class="notice">
-                        ℹ️ Please keep this email for your records and follow the prescribed treatment plan carefully. If you experience any unusual symptoms, contact the clinic immediately.
-                    </div>
-
-                    <div class="divider"></div>
-
-                    <p style="color: #666; font-size: 13px; line-height: 1.6;">
-                        If you have any questions or concerns about your consultation, please don\'t hesitate to contact CSPC Clinic. We are here to help ensure your recovery.
-                    </p>
-                </div>
-
-                <!-- Footer -->
-                <div class="footer">
-                    <div class="footer-logo">CSPC Clinic</div>
-                    <p>Professional Medical Services Center</p>
-                    <p style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
-                        © ' . date('Y') . ' CSPC Clinic. All rights reserved.
-                    </p>
-                </div>
-            </div>
-        </body>
-        </html>
+            <p>If you have any questions or concerns, please contact CSPC Clinic.</p><br>
+            <p>Best regards,<br>CSPC Clinic Team</p>
         ';
 
         // Send email

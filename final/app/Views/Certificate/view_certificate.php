@@ -1,71 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Medical Certificate</title>
-</head>
-<body>
-    <h1>View Medical Certificate</h1>
+<?= $this->extend('layouts/sidebar') ?>
+<?= $this->section('mainContent') ?>
 
-    <a href="/certificate">Back to Certificates</a>
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="page-title">Certificate Details</h2>
+        </div>
+        <div class="col-auto">
+            <a href="/certificate/export-pdf/<?= $cert['certificate_id'] ?>" class="btn btn-primary" title="Export to PDF">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </a>
+            <a href="/certificate" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
 
-    <h2>Certificate Details</h2>
+<?php if(!empty($cert)): ?>
 
-    <?php if(!empty($cert)): ?>
-        <table border='1'>
-            <tr>
-                <th>Field</th>
-                <th>Value</th>
-            </tr>
-            <tr>
-                <td>Certificate ID</td>
-                <td><?= esc($cert['certificate_id']) ?></td>
-            </tr>
-            <tr>
-                <td>Patient ID</td>
-                <td><?= esc($cert['patient_id']) ?></td>
-            </tr>
-            <tr>
-                <td>Consultation ID</td>
-                <td><?= esc($cert['consultation_id'] ?: 'N/A') ?></td>
-            </tr>
-            <tr>
-                <td>Certificate Type</td>
-                <td><?= esc(ucfirst(str_replace('_', ' ', $cert['certificate_type']))) ?></td>
-            </tr>
-            <tr>
-                <td>Diagnosis Summary</td>
-                <td><?= esc($cert['diagnosis_summary'] ?: 'N/A') ?></td>
-            </tr>
-            <tr>
-                <td>Recommendation</td>
-                <td><?= esc($cert['recommendation'] ?: 'N/A') ?></td>
-            </tr>
-            <tr>
-                <td>Validity Start</td>
-                <td><?= esc($cert['validity_start'] ?: 'N/A') ?></td>
-            </tr>
-            <tr>
-                <td>Validity End</td>
-                <td><?= esc($cert['validity_end'] ?: 'N/A') ?></td>
-            </tr>
-            <tr>
-                <td>Issued Date</td>
-                <td><?= esc($cert['issued_date']) ?></td>
-            </tr>
-            <tr>
-                <td>File Path</td>
-                <td><?= esc($cert['file_path'] ?: 'N/A') ?></td>
-            </tr>
-        </table>
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-1">Certificate ID</h5>
+                        <p class="mb-0"><span class="badge bg-blue">#<?= esc($cert['certificate_id']) ?></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-1">Patient ID</h5>
+                        <p class="mb-0"><?= esc($cert['patient_id']) ?></p>
+                    </div>
+                </div>
 
-        <br><br>
-        <a href="<?= base_url('/certificate/edit/'.$cert['certificate_id']) ?>">Edit</a>
-        <a href="<?= base_url('/certificate/delete/'.$cert['certificate_id']) ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                <hr>
 
-    <?php else: ?>
-        <p>Certificate not found</p>
-    <?php endif; ?>
-</body>
-</html>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-1">Consultation ID</h5>
+                        <p class="mb-3"><?= esc($cert['consultation_id'] ?: 'N/A') ?></p>
+
+                        <h5 class="text-muted mb-1">Certificate Type</h5>
+                        <p class="mb-3">
+                            <span class="badge bg-secondary"><?= esc(ucfirst(str_replace('_', ' ', $cert['certificate_type']))) ?></span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-1">Issued Date</h5>
+                        <p class="mb-3"><?= esc($cert['issued_date']) ?></p>
+
+                        <h5 class="text-muted mb-1">Validity Period</h5>
+                        <p class="mb-3">
+                            <small class="text-muted">
+                                <?= esc($cert['validity_start'] ?: 'N/A') ?> to <?= esc($cert['validity_end'] ?: 'N/A') ?>
+                            </small>
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h5 class="text-muted mb-2">Diagnosis Summary</h5>
+                <p class="mb-3"><?= esc($cert['diagnosis_summary'] ?: 'N/A') ?></p>
+
+                <h5 class="text-muted mb-2">Recommendation</h5>
+                <p class="mb-0"><?= esc($cert['recommendation'] ?: 'N/A') ?></p>
+
+                <hr>
+
+                <div class="form-footer">
+                    <a href="<?= base_url('/certificate/edit/'.$cert['certificate_id']) ?>" class="btn btn-primary">
+                        <i class="fa-solid fa-pencil"></i> Edit Certificate
+                    </a>
+                    <a href="<?= base_url('/certificate/delete/'.$cert['certificate_id']) ?>" class="btn btn-danger" onclick="return confirm('Delete this certificate?')">
+                        <i class="fa-solid fa-trash"></i> Delete
+                    </a>
+                    <a href="/certificate" class="btn btn-link">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php else: ?>
+    <div class="alert alert-warning">
+        <i class="fa-solid fa-circle-exclamation"></i> Certificate not found
+    </div>
+    <a href="/certificate" class="btn btn-secondary">Back to Certificates</a>
+<?php endif; ?>
+
+<?= $this->endSection() ?>

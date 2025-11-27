@@ -1,58 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Patient</title>
-</head>
-<body>
-    <h1>Edit Patient</h1>
+<?= $this->extend('layouts/sidebar') ?>
+<?= $this->section('mainContent') ?>
 
-      <?php if(session()->getFlashData('message')): ?>
-        <p><?= session()->getFlashData('message') ?></p>
-    <?php endif; ?>
+<div class="page-header d-print-none">
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="page-title">Edit Patient</h2>
+        </div>
+        <div class="col-auto">
+            <a href="/patient" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
 
-    <form action="<?= base_url('/patient/update/'.$p['patient_id']) ?>" method="post">
-        <?= csrf_field() ?>
-        <label for="user_id">User ID: </label>
-        <input type="number" name="user_id" id="" placeholder="leave blank if none" value="<?= $p['user_id']?>"><br><br>
-        <label for="user_id">First Name:</label>
-        <input type="text" name="first_name" id="" value="<?= $p['first_name']?>" required><br><br>
-        <label for="user_id">Middle Name:</label>
-        <input type="text" name="middle_name" id="" value="<?= $p['middle_name']?>"><br><br>
-        <label for="user_id">Last Name:</label>
-        <input type="text" name="last_name" id="" value="<?= $p['last_name']?>" required><br><br>
-        <label for="">Gender:</label>
-        <select name="gender" id="">
-            <option value="male" <?= ($p['gender'] === 'male') ? 'selected' : '' ?>>Male</option>
-            <option value="female" <?= ($p['gender'] === 'female') ? 'selected' : '' ?> >Female</option>
-            <option value="other" <?= ($p['gender'] === 'other') ? 'selected' : '' ?> >Other</option>
-        </select><br><br>
-        <label for="">Birth Date:</label>
-        <input type="date" name="birth_date" id="" value="<?= $p['birth_date']?>" required><br><br>
-        <label for="">Phone Number:</label>
-        <input type="text" name="contact_no" value="<?= $p['contact_no']?>" required><br><br>
-        <label for="">Address:</label>
-        <input type="text" name="address" value="<?= $p['address']?>" required><br><br>
-        <label for="">Blood Type:</label>
-        <select name="blood_type" id="" required>
-            <option value="">--Select--</option>
-            <option value="A+" <?= ($p['blood_type'] === 'A+') ? 'selected' : '' ?> >A+</option>
-            <option value="A-" <?= ($p['blood_type'] === 'A-') ? 'selected' : '' ?> >A-</option>
-            <option value="B+" <?= ($p['blood_type'] === 'B+') ? 'selected' : '' ?> >B+</option>
-            <option value="B-" <?= ($p['blood_type'] === 'B-') ? 'selected' : '' ?> >B-</option>
-            <option value="AB+" <?= ($p['blood_type'] === 'AB+') ? 'selected' : '' ?> >AB+</option>
-            <option value="AB-"<?= ($p['blood_type'] === 'AB-') ? 'selected' : '' ?> >AB-</option>
-            <option value="O+" <?= ($p['blood_type'] === 'O+') ? 'selected' : '' ?> >O+</option>
-            <option value="O-" <?= ($p['blood_type'] === 'O-') ? 'selected' : '' ?> >O-</option>
-        </select><br><br>
-        <label for="">Allergies:</label>
-        <input type="text" name="allergies" value="<?= $p['allergies']?>" ><br><br>
-        <label for="">Medical History:</label>
-        <input type="text" name="medical_history" value="<?= $p['medical_history']?>" ><br><br>
-        <label for="">Emergency Contact Number:</label>
-        <input type="text" name="emergency_contact" value="<?= $p['emergency_contact']?>" ><br><br>
-        <input type="submit" value="Update Patient">
-        
-</body>
-</html>
+<?php if(session()->getFlashData('message')): ?>
+    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
+<?php endif; ?>
+
+<div class="card">
+    <div class="card-body">
+        <form action="<?= base_url('/patient/update/'.$p['patient_id']) ?>" method="post">
+                    <?= csrf_field() ?>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                <input type="text" name="first_name" class="form-control" value="<?= $p['first_name']?>" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Middle Name</label>
+                                <input type="text" name="middle_name" class="form-control" value="<?= $p['middle_name']?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" name="last_name" class="form-control" value="<?= $p['last_name']?>" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Gender <span class="text-danger">*</span></label>
+                                <select name="gender" class="form-select" required>
+                                    <option value="male" <?= ($p['gender'] === 'male') ? 'selected' : '' ?>>Male</option>
+                                    <option value="female" <?= ($p['gender'] === 'female') ? 'selected' : '' ?>>Female</option>
+                                    <option value="other" <?= ($p['gender'] === 'other') ? 'selected' : '' ?>>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Birth Date <span class="text-danger">*</span></label>
+                                <input type="date" name="birth_date" class="form-control" value="<?= $p['birth_date']?>" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Blood Type <span class="text-danger">*</span></label>
+                                <select name="blood_type" class="form-select" required>
+                                    <option value="">-- Select Blood Type --</option>
+                                    <option value="A+" <?= ($p['blood_type'] === 'A+') ? 'selected' : '' ?>>A+</option>
+                                    <option value="A-" <?= ($p['blood_type'] === 'A-') ? 'selected' : '' ?>>A-</option>
+                                    <option value="B+" <?= ($p['blood_type'] === 'B+') ? 'selected' : '' ?>>B+</option>
+                                    <option value="B-" <?= ($p['blood_type'] === 'B-') ? 'selected' : '' ?>>B-</option>
+                                    <option value="AB+" <?= ($p['blood_type'] === 'AB+') ? 'selected' : '' ?>>AB+</option>
+                                    <option value="AB-" <?= ($p['blood_type'] === 'AB-') ? 'selected' : '' ?>>AB-</option>
+                                    <option value="O+" <?= ($p['blood_type'] === 'O+') ? 'selected' : '' ?>>O+</option>
+                                    <option value="O-" <?= ($p['blood_type'] === 'O-') ? 'selected' : '' ?>>O-</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contact Number <span class="text-danger">*</span></label>
+                        <input type="text" name="contact_no" class="form-control" value="<?= $p['contact_no']?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Address <span class="text-danger">*</span></label>
+                        <textarea name="address" class="form-control" rows="2" required><?= $p['address']?></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Allergies</label>
+                        <textarea name="allergies" class="form-control" rows="2"><?= $p['allergies']?></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Medical History</label>
+                        <textarea name="medical_history" class="form-control" rows="3"><?= $p['medical_history']?></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Emergency Contact Number</label>
+                        <input type="text" name="emergency_contact" class="form-control" value="<?= $p['emergency_contact']?>">
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-check"></i> Update Patient
+                        </button>
+                        <a href="/patient" class="btn btn-link">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>

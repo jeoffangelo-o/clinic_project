@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\AppointmentModel;
 use App\Models\PatientModel;
+use App\Models\UserModel;
 
 
 class AppointmentController extends BaseController
@@ -144,6 +145,9 @@ class AppointmentController extends BaseController
 
             $appoint->update($id, $data);
 
+            // Send email notification
+            $this->sendAppointmentStatusEmail($exist['patient_id'], $data['status'], $data['remarks']);
+
             return redirect()->to('/appointment')->with('message', 'Appointment Saved Successfully');
         }
 
@@ -173,5 +177,76 @@ class AppointmentController extends BaseController
         $appoint->delete($id);
 
         return redirect()->to('/appointment')->with('message', 'Appointment Deleted Successfully');
+    }
+
+    private function sendAppointmentStatusEmail($patient_id, $status, $remarks)
+    {
+        $patient = new PatientModel();
+        $user = new UserModel();
+
+        // Get patient info
+        $patientInfo = $patient->find($patient_id);
+        if(!$patientInfo){
+            return;
+        }
+
+        // Get user email
+        $userInfo = $user->find($patientInfo['user_id']);
+        if(!$userInfo || empty($userInfo['email'])){
+            return;
+        }
+
+        // Validate email format
+        if(!filter_var($userInfo['email'], FILTER_VALIDATE_EMAIL)){
+            return;
+        }
+
+        // Create status message
+        $statusMessage = '';
+        $statusColor = '';
+        
+        switch($status){
+            case 'approved':
+                $statusMessage = 'APPROVED';
+                $statusColor = '#28a745';
+                break;
+            case 'rejected':
+                $statusMessage = 'REJECTED';
+                $statusColor = '#dc3545';
+                break;
+            case 'completed':
+                $statusMessage = 'COMPLETED';
+                $statusColor = '#007bff';
+                break;
+            case 'cancelled':
+                $statusMessage = 'CANCELLED';
+                $statusColor = '#ffc107';
+                break;
+            default:
+                $statusMessage = strtoupper($status);
+                $statusColor = '#6c757d';
+        }
+
+        // Build email message
+        $message = '
+            <h2>Appointment Status Update</h2>
+            <p>Dear ' . $userInfo['username'] . ',</p><br>
+            <p>Your appointment status has been updated:</p><br>
+            <div style="background-color: ' . $statusColor . '; color: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <h3 style="margin: 0;">Status: ' . $statusMessage . '</h3>
+            </div><br>
+            ' . (!empty($remarks) ? '<p><strong>Remarks:</strong> ' . $remarks . '</p><br>' : '') . '
+            <p>If you have any questions, please contact CSPC Clinic.</p><br>
+            <p>Best regards,<br>CSPC Clinic Team</p>
+        ';
+
+        // Send email
+        $email = \Config\Services::email();
+        $email->setTo($userInfo['email']);
+        $email->setFrom('jeoffgbanaria@gmail.com', 'CSPC Clinic');
+        $email->setSubject('Appointment Status: ' . $statusMessage);
+        $email->setMessage($message);
+        $email->send();
+        $email->clear(true);
     }
 }
