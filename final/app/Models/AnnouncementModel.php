@@ -13,7 +13,8 @@ class AnnouncementModel extends Model
                                     'content',
                                     'posted_by',
                                     'posted_at',
-                                    'posted_until'
+                                    'posted_until',
+                                    'url'
                                     ];
 
 }

@@ -1,10 +1,10 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
-
+<br><br>
 <div class="page-header d-print-none">
     <h2 class="page-title">Edit Medical Certificate</h2>
 </div>
-
+<br>
 <?php if(!empty($cert)): ?>
 
 <div class="card">

@@ -92,8 +92,14 @@
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Create your account</h2>
 
-                <?php if(session()->getFlashData('message')): ?>
-                    <div data-flash-message="danger" style="display: none;"><?= session()->getFlashData('message') ?></div>
+                <?php if(session()->getFlashData('message')): 
+                    $message = session()->getFlashData('message');
+                    $alertClass = (strpos($message, 'Successfully') !== false) ? 'success' : 'danger';
+                ?>
+                    <div class="alert alert-<?= $alertClass ?> alert-dismissible fade show" role="alert">
+                        <?= $message ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 <?php endif; ?>
 
                 <form action="<?= base_url('/store_user') ?>" method="post" class="form-group">
@@ -112,6 +118,15 @@
                     <div class="mb-3">
                         <label class="form-label">Email Address</label>
                         <input type="email" name="email" class="form-control" placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select name="role" class="form-control" required>
+                            <option value="" disabled selected>Select your role</option>
+                            <option value="student">Student</option>
+                            <option value="staff">Staff</option>
+                        </select>
                     </div>
 
                     <div class="d-grid">

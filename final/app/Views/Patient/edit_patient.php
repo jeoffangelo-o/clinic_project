@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
 
+<br><br>
 <div class="page-header d-print-none">
     <div class="row align-items-center">
         <div class="col">
@@ -14,14 +15,17 @@
     </div>
 </div>
 
-<?php if(session()->getFlashData('message')): ?>
-    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
-<?php endif; ?>
-
-<div class="card">
+<div class="card\">
     <div class="card-body">
         <form action="<?= base_url('/patient/update/'.$p['patient_id']) ?>" method="post">
                     <?= csrf_field() ?>
+                    <?php if(session()->get('role') === 'admin'): ?>
+                        <div class="mb-3">
+                            <label class="form-label">User ID (Optional)</label>
+                            <input type="number" name="user_id" class="form-control" value="<?= esc($p['user_id'] ?? '') ?>">
+                            <small class="text-muted">Assign this patient to a system user by entering their User ID. Leave blank for Walk In.</small>
+                        </div>
+                    <?php endif; ?>
                     
                     <div class="row">
                         <div class="col-md-6">

@@ -25,8 +25,14 @@ class UserController extends BaseController
             return redirect()->to('/register')->with('message', 'Username Already Exists');
         }
 
-        $password =  request()->getPost('password');
         $email =  request()->getPost('email');
+        $existingEmail = $user->where('email', $email)->first();
+
+        if($existingEmail){
+            return redirect()->to('/register')->with('message', 'Email Already Exists');
+        }
+
+        $password =  request()->getPost('password');
         $role =  request()->getPost('role');
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -98,8 +104,26 @@ class UserController extends BaseController
         }
 
         $user = new UserModel();
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
-        $data['user'] = $user->findAll();
+        if ($search) {
+            $data['user'] = $user
+                ->groupStart()
+                ->like('username', $search)
+                ->orLike('email', $search)
+                ->orLike('role', $search)
+                ->groupEnd()
+                ->orderBy('user_id', $sort)
+                ->findAll();
+        } else {
+            $data['user'] = $user->orderBy('user_id', $sort)->findAll();
+        }
 
         return view('/Admin/list_user', $data);
     }

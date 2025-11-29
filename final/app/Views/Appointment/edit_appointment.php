@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
 
+<br><br>
 <div class="page-header d-print-none">
     <div class="row align-items-center">
         <div class="col">
@@ -13,11 +14,7 @@
         </div>
     </div>
 </div>
-
-<?php if(session()->getFlashData('message')): ?>
-    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
-<?php endif; ?>
-
+<br>
 <?php session()->set('activity', 'edit') ?>
 
 <div class="card">

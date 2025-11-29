@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
 
+<br><br>
 <div class="page-header d-print-none">
     <div class="row align-items-center">
         <div class="col">
@@ -13,16 +14,12 @@
         </div>
     </div>
 </div>
-
-<?php if(session()->getFlashData('message')): ?>
-    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
-<?php endif; ?>
-
+<br>
 <?php if(!empty($item)): ?>
 
 <div class="card">
     <div class="card-body">
-        <form action="/inventory/update/<?= $item['inventory_id'] ?>" method="post">
+        <form action="/inventory/update/<?= $item['item_id'] ?>" method="post">
                     <?= csrf_field() ?>
                     
                     <div class="mb-3">

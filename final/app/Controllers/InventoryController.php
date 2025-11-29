@@ -15,8 +15,26 @@ class InventoryController extends BaseController
         }
 
         $inventory = new InventoryModel();
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
-        $data['inventory'] = $inventory->findAll();
+        if ($search) {
+            $data['inventory'] = $inventory
+                ->groupStart()
+                ->like('item_name', $search)
+                ->orLike('item_id', $search)
+                ->orLike('category', $search)
+                ->groupEnd()
+                ->orderBy('item_id', $sort)
+                ->findAll();
+        } else {
+            $data['inventory'] = $inventory->orderBy('item_id', $sort)->findAll();
+        }
 
         return view('Inventory/inventory', $data);
     }

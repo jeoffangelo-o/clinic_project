@@ -92,8 +92,14 @@
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Sign in to your account</h2>
 
-                <?php if(session()->getFlashData('message')): ?>
-                    <div data-flash-message="danger" style="display: none;"><?= session()->getFlashData('message') ?></div>
+                <?php if(session()->getFlashData('message')): 
+                    $message = session()->getFlashData('message');
+                    $alertClass = (strpos($message, 'Error') !== false || strpos($message, 'Invalid') !== false) ? 'danger' : 'success';
+                ?>
+                    <div class="alert alert-<?= $alertClass ?> alert-dismissible fade show" role="alert">
+                        <?= $message ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 <?php endif; ?>
 
                 <form action="<?= base_url('/auth') ?>" method="post" class="form-group">

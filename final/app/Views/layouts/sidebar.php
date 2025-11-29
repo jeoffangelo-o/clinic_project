@@ -47,7 +47,8 @@
                 <?php endif; ?>
 
                 <!-- Patient Management -->
-                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'staff'])): ?>
+                <!-- Admin, Nurse, Student, Staff can access -->
+                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'student', 'staff'])): ?>
                     <li class="nav-item" style="list-style: none;">
                         <a class="nav-link <?= strpos(uri_string(), 'patient') !== false ? 'active' : '' ?>" href="<?= base_url('/patient') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                             <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
@@ -59,7 +60,8 @@
                 <?php endif; ?>
 
                 <!-- Consultations -->
-                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'staff', 'student'])): ?>
+                <!-- Admin, Nurse, Student, Staff can access -->
+                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'student', 'staff'])): ?>
                     <li class="nav-item" style="list-style: none;">
                         <a class="nav-link <?= strpos(uri_string(), 'consultation') !== false ? 'active' : '' ?>" href="<?= base_url('/consultation') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                             <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
@@ -71,6 +73,7 @@
                 <?php endif; ?>
 
                 <!-- Appointments -->
+                <!-- All roles can access -->
                 <li class="nav-item" style="list-style: none;">
                     <a class="nav-link <?= strpos(uri_string(), 'appointment') !== false ? 'active' : '' ?>" href="<?= base_url('/appointment') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                         <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
@@ -81,7 +84,8 @@
                 </li>
 
                 <!-- Inventory -->
-                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'staff'])): ?>
+                <!-- Only Admin and Nurse can access -->
+                <?php if(in_array(session()->get('role'), ['admin', 'nurse'])): ?>
                     <li class="nav-item" style="list-style: none;">
                         <a class="nav-link <?= strpos(uri_string(), 'inventory') !== false ? 'active' : '' ?>" href="<?= base_url('/inventory') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                             <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
@@ -93,7 +97,8 @@
                 <?php endif; ?>
 
                 <!-- Reports -->
-                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'staff'])): ?>
+                <!-- Only Admin and Nurse can access -->
+                <?php if(in_array(session()->get('role'), ['admin', 'nurse'])): ?>
                     <li class="nav-item" style="list-style: none;">
                         <a class="nav-link <?= strpos(uri_string(), 'report') !== false ? 'active' : '' ?>" href="<?= base_url('/report') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                             <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
@@ -105,7 +110,8 @@
                 <?php endif; ?>
 
                 <!-- Certificates -->
-                <?php if(in_array(session()->get('role'), ['admin', 'nurse', 'staff'])): ?>
+                <!-- Only Admin and Nurse can access -->
+                <?php if(in_array(session()->get('role'), ['admin', 'nurse'])): ?>
                     <li class="nav-item" style="list-style: none;">
                         <a class="nav-link <?= strpos(uri_string(), 'certificate') !== false ? 'active' : '' ?>" href="<?= base_url('/certificate') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                             <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">
@@ -117,6 +123,7 @@
                 <?php endif; ?>
 
                 <!-- Announcements -->
+                <!-- All roles can view announcements -->
                 <li class="nav-item" style="list-style: none;">
                     <a class="nav-link <?= strpos(uri_string(), 'announcement') !== false ? 'active' : '' ?>" href="<?= base_url('/announcement') ?>" style="padding: 0.75rem 1.5rem; display: flex; align-items: center; color: #495057; text-decoration: none; transition: all 0.3s ease;">
                         <span class="nav-link-icon d-md-none d-lg-inline-block" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem;">

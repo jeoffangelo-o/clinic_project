@@ -1,17 +1,14 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
 
+<br><br>
 <div class="page-header d-print-none">
     <h2 class="page-title">
         <i class="fas fa-box"></i> Add Inventory Item
     </h2>
     <p class="text-muted">Add a new item to inventory</p>
 </div>
-
-<?php if(session()->getFlashData('message')): ?>
-    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
-<?php endif; ?>
-
+<br>
 <div class="card">
     <div class="card-body">
         <form action="/inventory/store" method="post">

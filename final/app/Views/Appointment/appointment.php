@@ -1,6 +1,13 @@
 <?= $this->extend('layouts/sidebar') ?>
 
 <?= $this->section('mainContent') ?>
+
+<?php if(!session()->get('hasPatient')): ?>
+    <div class="alert alert-warning alert-dismissible fade show">
+        <i class="fas fa-exclamation-triangle"></i> You don't have patient info. <a href="<?= base_url('/patient/add') ?>" class="alert-link">Add</a> to continue.
+    </div>
+<?php endif; ?>
+
 <br><br>
 <div class="page-header d-print-none">
     <div class="row align-items-center mb-3">
@@ -19,22 +26,44 @@
         </div>
     </div>
 </div>
-
-<?php if(!session()->get('hasPatient')): ?>
-    <div class="alert alert-warning alert-dismissible fade show">
-        <i class="fas fa-exclamation-triangle"></i> You don't have patient info. <a href="<?= base_url('/patient/add') ?>" class="alert-link">Add</a> to continue.
-    </div>
-<?php endif; ?>
-
-<?php if(session()->getFlashData('message')): ?>
-    <div data-flash-message="info" style="display: none;"><?= session()->getFlashData('message') ?></div>
-<?php endif; ?>
-
+<br>
 <?php if(session()->get('role') === 'student' || session()->get('role') === 'staff'): ?>
 
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">My Appointments</h3>
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="card-title">My Appointments</h3>
+            </div>
+            <form method="get" action="<?= base_url('/appointment') ?>" class="row g-3 mt-2">
+                <div class="col-12">
+                    <div class="d-flex gap-3">
+                        <div class="flex-grow-1">
+                            <input type="text" name="search" class="form-control form-control-lg" placeholder="Search by ID, patient ID, purpose, status..." value="<?= esc(request()->getGet('search') ?? '') ?>">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <?php if(request()->getGet('search')): ?>
+                            <a href="<?= base_url('/appointment') ?>" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i> Clear
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex gap-2 align-items-center">
+                        <span class="text-dark fw-bold">Sort by ID:</span>
+                        <div class="btn-group" role="group">
+                            <a href="<?= base_url('/appointment?sort=asc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'asc') ? 'btn-info' : 'btn-outline-info' ?>">
+                                <i class="fas fa-arrow-up"></i> Ascending
+                            </a>
+                            <a href="<?= base_url('/appointment?sort=desc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'desc' || empty(request()->getGet('sort'))) ? 'btn-info' : 'btn-outline-info' ?>">
+                                <i class="fas fa-arrow-down"></i> Descending
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="table-responsive">
             <table class="table table-vcenter card-table">
@@ -84,15 +113,49 @@
 <?php elseif(session()->get('role') === 'admin' || session()->get('role') === 'nurse'): ?>
 
     <div class="card mb-3">
-        <div class="card-body">
-            <form action="<?= base_url('/appointment') ?>" method="get" class="d-flex gap-2">
-                <select name="status" class="form-select" onchange="this.form.submit()">
-                    <option value="all" <?= (session()->get('appointment_status') === 'all') ? 'selected' : '' ?>>All Appointments</option>
-                    <option value="pending" <?= (session()->get('appointment_status') === 'pending') ? 'selected' : '' ?>>Pending</option>
-                    <option value="approved" <?= (session()->get('appointment_status') === 'approved') ? 'selected' : '' ?>>Approved</option>
-                    <option value="cancelled" <?= (session()->get('appointment_status') === 'cancelled') ? 'selected' : '' ?>>Cancelled</option>
-                    <option value="completed" <?= (session()->get('appointment_status') === 'completed') ? 'selected' : '' ?>>Completed</option>
-                </select>
+        <div class="card-header">
+
+            <form action="<?= base_url('/appointment') ?>" method="get" class="row g-3">
+                <div class="col-12">
+                    <div class="d-flex gap-3">
+                        <div class="flex-grow-1">
+                            <input type="text" name="search" class="form-control form-control-lg" placeholder="Search by ID, patient ID, purpose..." value="<?= esc(request()->getGet('search') ?? '') ?>">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <?php if(request()->getGet('search')): ?>
+                            <a href="<?= base_url('/appointment') ?>" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i> Clear
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Filter by Status:</label>
+                            <select name="status" class="form-select form-select-lg" onchange="this.form.submit()">
+                                <option value="all" <?= (session()->get('appointment_status') === 'all') ? 'selected' : '' ?>>All Appointments</option>
+                                <option value="pending" <?= (session()->get('appointment_status') === 'pending') ? 'selected' : '' ?>>Pending</option>
+                                <option value="approved" <?= (session()->get('appointment_status') === 'approved') ? 'selected' : '' ?>>Approved</option>
+                                <option value="cancelled" <?= (session()->get('appointment_status') === 'cancelled') ? 'selected' : '' ?>>Cancelled</option>
+                                <option value="completed" <?= (session()->get('appointment_status') === 'completed') ? 'selected' : '' ?>>Completed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark">Sort by ID:</label>
+                            <div class="btn-group w-100" role="group">
+                                <a href="<?= base_url('/appointment?sort=asc&status=' . (session()->get('appointment_status') ?? 'all') . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'asc') ? 'btn-info' : 'btn-outline-info' ?>">
+                                    <i class="fas fa-arrow-up"></i> Ascending
+                                </a>
+                                <a href="<?= base_url('/appointment?sort=desc&status=' . (session()->get('appointment_status') ?? 'all') . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'desc' || empty(request()->getGet('sort'))) ? 'btn-info' : 'btn-outline-info' ?>">
+                                    <i class="fas fa-arrow-down"></i> Descending
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

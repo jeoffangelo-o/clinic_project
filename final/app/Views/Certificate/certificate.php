@@ -1,5 +1,6 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
+
 <br><br>
 <div class="page-header">
     <div class="row align-items-center">
@@ -13,8 +14,40 @@
         </div>
     </div>
 </div>
-
+<br>
 <div class="card">
+    <div class="card-header">
+        <form method="get" action="<?= base_url('/certificate') ?>" class="row g-3">
+            <div class="col-12">
+                <div class="d-flex gap-3">
+                    <div class="flex-grow-1">
+                        <input type="text" name="search" class="form-control form-control-lg" placeholder="Search by certificate ID, patient ID, type..." value="<?= esc(request()->getGet('search') ?? '') ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <?php if(request()->getGet('search')): ?>
+                        <a href="<?= base_url('/certificate') ?>" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Clear
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="text-dark fw-bold">Sort by ID:</span>
+                    <div class="btn-group" role="group">
+                        <a href="<?= base_url('/certificate?sort=asc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'asc') ? 'btn-info' : 'btn-outline-info' ?>">
+                            <i class="fas fa-arrow-up"></i> Ascending
+                        </a>
+                        <a href="<?= base_url('/certificate?sort=desc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'desc' || empty(request()->getGet('sort'))) ? 'btn-info' : 'btn-outline-info' ?>">
+                            <i class="fas fa-arrow-down"></i> Descending
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="table-responsive">
         <table class="table table-vcenter card-table">
             <thead>
@@ -36,12 +69,12 @@
                             </td>
                             <td><?= esc($c['patient_id']) ?></td>
                             <td>
-                                <span class="badge bg-secondary">
+                                <span class="badge bg-primary text-white">
                                     <?= esc(ucfirst(str_replace('_', ' ', $c['certificate_type']))) ?>
                                 </span>
                             </td>
                             <td>
-                                <small class="text-muted">
+                                <small class="text-dark">
                                     <?= esc($c['validity_start'] ?: 'N/A') ?> to <?= esc($c['validity_end'] ?: 'N/A') ?>
                                 </small>
                             </td>

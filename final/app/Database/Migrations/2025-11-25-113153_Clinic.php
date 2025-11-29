@@ -21,6 +21,7 @@ class CreateCspcClinicTables extends Migration
         ]);
         $this->forge->addKey('user_id', true);
         $this->forge->addUniqueKey('username');
+        $this->forge->addUniqueKey('email');
         $this->forge->createTable('users');
 
         /**
@@ -146,13 +147,69 @@ class CreateCspcClinicTables extends Migration
         $this->forge->addField([
             'report_id'     => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
             'generated_by'  => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'null' => true],
-            'report_type'   => ['type' => 'ENUM', 'constraint' => ['daily', 'weekly', 'monthly', 'inventory', 'patient']],
+            'report_type'   => ['type' => 'ENUM', 'constraint' => ['patient','consultation','appointment','inventory','announcement','comprehensive','daily','weekly','monthly'], 'null' => true],
+            'report_data'   => ['type' => 'TEXT', 'null' => true],
             'generated_at'  => ['type' => 'TIMESTAMP', 'default' => 'CURRENT_TIMESTAMP'],
             'file_path'     => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
         ]);
         $this->forge->addKey('report_id', true);
         $this->forge->addForeignKey('generated_by', 'users', 'user_id', 'SET NULL', 'CASCADE');
         $this->forge->createTable('reports');
+
+        /**
+         * CONSULTATION_MEDICINES TABLE
+         */
+        $this->forge->addField([
+            'id'              => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            'consultation_id' => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
+            'item_id'         => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
+            'quantity_used'   => ['type' => 'DECIMAL', 'constraint' => '10,2'],
+            'unit'            => ['type' => 'VARCHAR', 'constraint' => 50, 'null' => true],
+            'created_at'      => ['type' => 'TIMESTAMP', 'default' => 'CURRENT_TIMESTAMP'],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->addKey('consultation_id');
+        $this->forge->addKey('item_id');
+        $this->forge->addForeignKey('consultation_id', 'consultations', 'consultation_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('item_id', 'inventory', 'item_id', 'CASCADE', 'CASCADE');
+        $this->forge->createTable('consultation_medicines');
+
+        /**
+         * INVENTORY_LOG TABLE
+         */
+        $this->forge->addField([
+            'id'                       => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
+            'item_id'                  => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
+            'quantity_change'          => ['type' => 'DECIMAL', 'constraint' => '10,2'],
+            'reason'                   => ['type' => 'ENUM', 'constraint' => ['consumption','stock_in','adjustment','rollback'], 'default' => 'adjustment'],
+            'related_consultation_id'  => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'null' => true],
+            'logged_by'                => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'null' => true],
+            'notes'                    => ['type' => 'TEXT', 'null' => true],
+            'created_at'               => ['type' => 'TIMESTAMP', 'default' => 'CURRENT_TIMESTAMP'],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->addKey('item_id');
+        $this->forge->addKey('related_consultation_id');
+        $this->forge->addKey('logged_by');
+        $this->forge->addForeignKey('item_id', 'inventory', 'item_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('related_consultation_id', 'consultations', 'consultation_id', 'SET NULL', 'CASCADE');
+        $this->forge->addForeignKey('logged_by', 'users', 'user_id', 'SET NULL', 'CASCADE');
+        $this->forge->createTable('inventory_log');
+
+        /**
+         * MIGRATIONS TABLE (framework style)
+         */
+        $this->forge->addField([
+            'id'        => ['type' => 'BIGINT', 'constraint' => 20, 'unsigned' => true, 'auto_increment' => true],
+            'version'   => ['type' => 'VARCHAR', 'constraint' => 255],
+            'class'     => ['type' => 'VARCHAR', 'constraint' => 255],
+            'group'     => ['type' => 'VARCHAR', 'constraint' => 255],
+            'namespace' => ['type' => 'VARCHAR', 'constraint' => 255],
+            'time'      => ['type' => 'INT', 'constraint' => 11],
+            'batch'     => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('migrations');
     }
 
     public function down()

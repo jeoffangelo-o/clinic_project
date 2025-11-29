@@ -23,11 +23,11 @@
     <div class="card-body">
         <div class="row mb-3">
                     <div class="col-md-6">
-                        <h5 class="text-muted mb-1">Certificate ID</h5>
+                        <h5 class="text-dark fw-bold mb-1">Certificate ID</h5>
                         <p class="mb-0"><span class="badge bg-blue">#<?= esc($cert['certificate_id']) ?></span></p>
                     </div>
                     <div class="col-md-6">
-                        <h5 class="text-muted mb-1">Patient ID</h5>
+                        <h5 class="text-dark fw-bold mb-1">Patient ID</h5>
                         <p class="mb-0"><?= esc($cert['patient_id']) ?></p>
                     </div>
                 </div>
@@ -36,21 +36,21 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h5 class="text-muted mb-1">Consultation ID</h5>
+                        <h5 class="text-dark fw-bold mb-1">Consultation ID</h5>
                         <p class="mb-3"><?= esc($cert['consultation_id'] ?: 'N/A') ?></p>
 
-                        <h5 class="text-muted mb-1">Certificate Type</h5>
+                        <h5 class="text-dark fw-bold mb-1">Certificate Type</h5>
                         <p class="mb-3">
-                            <span class="badge bg-secondary"><?= esc(ucfirst(str_replace('_', ' ', $cert['certificate_type']))) ?></span>
+                            <span class="badge bg-primary text-white"><?= esc(ucfirst(str_replace('_', ' ', $cert['certificate_type']))) ?></span>
                         </p>
                     </div>
                     <div class="col-md-6">
-                        <h5 class="text-muted mb-1">Issued Date</h5>
+                        <h5 class="text-dark fw-bold mb-1">Issued Date</h5>
                         <p class="mb-3"><?= esc($cert['issued_date']) ?></p>
 
-                        <h5 class="text-muted mb-1">Validity Period</h5>
+                        <h5 class="text-dark fw-bold mb-1">Validity Period</h5>
                         <p class="mb-3">
-                            <small class="text-muted">
+                            <small class="text-dark">
                                 <?= esc($cert['validity_start'] ?: 'N/A') ?> to <?= esc($cert['validity_end'] ?: 'N/A') ?>
                             </small>
                         </p>
@@ -59,10 +59,10 @@
 
                 <hr>
 
-                <h5 class="text-muted mb-2">Diagnosis Summary</h5>
+                <h5 class="text-dark fw-bold mb-2">Diagnosis Summary</h5>
                 <p class="mb-3"><?= esc($cert['diagnosis_summary'] ?: 'N/A') ?></p>
 
-                <h5 class="text-muted mb-2">Recommendation</h5>
+                <h5 class="text-dark fw-bold mb-2">Recommendation</h5>
                 <p class="mb-0"><?= esc($cert['recommendation'] ?: 'N/A') ?></p>
 
                 <hr>

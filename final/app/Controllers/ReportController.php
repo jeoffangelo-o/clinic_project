@@ -23,8 +23,32 @@ class ReportController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can view reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to access reports');
+        }
+
         $report = new ReportModel();
-        $data['report'] = $report->orderBy('report_id', 'DESC')->findAll();
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'desc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'desc';
+        }
+
+        if ($search) {
+            $data['report'] = $report
+                ->groupStart()
+                ->like('report_id', $search)
+                ->orLike('report_type', $search)
+                ->orLike('generated_by', $search)
+                ->groupEnd()
+                ->orderBy('report_id', $sort)
+                ->findAll();
+        } else {
+            $data['report'] = $report->orderBy('report_id', $sort)->findAll();
+        }
 
         return view('Report/report', $data);
     }
@@ -33,6 +57,11 @@ class ReportController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can generate reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to generate reports');
         }
 
         $reportModel = new ReportModel();
@@ -57,6 +86,11 @@ class ReportController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can view reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to view reports');
         }
 
         $reportModel = new ReportModel();
@@ -94,6 +128,11 @@ class ReportController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can modify reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to modify reports');
+        }
+
         $reportModel = new ReportModel();
         $exist = $reportModel->find($id);
         if (!$exist) {
@@ -117,6 +156,11 @@ class ReportController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can delete reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to delete reports');
+        }
+
         $reportModel = new ReportModel();
         $exist = $reportModel->find($id);
         if (!$exist) {
@@ -132,6 +176,11 @@ class ReportController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can bulk delete reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to delete reports');
         }
 
         $report_ids = $this->request->getPost('report_ids');
@@ -167,6 +216,11 @@ class ReportController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can export reports
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/')->with('message', 'Error: You do not have permission to export reports');
         }
 
         $reportModel = new ReportModel();

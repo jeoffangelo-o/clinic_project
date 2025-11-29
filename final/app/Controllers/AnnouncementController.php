@@ -16,8 +16,25 @@ class AnnouncementController extends BaseController
         }
 
         $announce = new AnnouncementModel();
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
-        $data['announce'] = $announce->findAll();
+        if ($search) {
+            $data['announce'] = $announce
+                ->groupStart()
+                ->like('title', $search)
+                ->orLike('content', $search)
+                ->groupEnd()
+                ->orderBy('announcement_id', $sort)
+                ->findAll();
+        } else {
+            $data['announce'] = $announce->orderBy('announcement_id', $sort)->findAll();
+        }
 
         return view('Announcement/announcement' , $data);
     }
@@ -28,6 +45,11 @@ class AnnouncementController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can add announcements
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/announcement')->with('message', 'Error: You do not have permission to add announcements');
+        }
+
         return view('Announcement/add_announcement');
     }
 
@@ -35,6 +57,11 @@ class AnnouncementController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can create announcements
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/announcement')->with('message', 'Error: You do not have permission to create announcements');
         }
 
         $a = new AnnouncementModel();
@@ -182,6 +209,11 @@ class AnnouncementController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can edit announcements
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/announcement')->with('message', 'Error: You do not have permission to edit announcements');
+        }
+
         $announce = new AnnouncementModel();
         $data['announce'] = $announce->find($id);
 
@@ -196,6 +228,11 @@ class AnnouncementController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can update announcements
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/announcement')->with('message', 'Error: You do not have permission to update announcements');
         }
 
         $announce = new AnnouncementModel();
@@ -225,6 +262,11 @@ class AnnouncementController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can delete announcements
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/announcement')->with('message', 'Error: You do not have permission to delete announcements');
         }
 
         $announce = new AnnouncementModel();

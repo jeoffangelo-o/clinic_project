@@ -1,14 +1,10 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
-
+<br><br>
 <div class="page-header d-print-none">
     <h2 class="page-title">Edit Announcement</h2>
 </div>
-
-<?php if(session()->getFlashData('message')): ?>
-    <div data-flash-message="success" style="display: none;"><?= session()->getFlashData('message') ?></div>
-<?php endif; ?>
-
+<br>
 <div class="card">
     <div class="card-body">
         <form action="/announcement/update/<?= $announce['announcement_id'] ?>" method="post">

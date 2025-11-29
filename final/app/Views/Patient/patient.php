@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/sidebar') ?>
 
 <?= $this->section('mainContent') ?>
+
 <br><br>
 <div class="page-header d-print-none">
     <div class="row align-items-center mb-3">
@@ -17,8 +18,40 @@
         </div>
     </div>
 </div>
-
+<br>
 <div class="card">
+    <div class="card-header">
+        <form method="get" action="<?= base_url('/patient') ?>" class="row g-3">
+            <div class="col-12">
+                <div class="d-flex gap-3">
+                    <div class="flex-grow-1">
+                        <input type="text" name="search" class="form-control form-control-lg" placeholder="Search by name, ID, contact..." value="<?= esc(request()->getGet('search') ?? '') ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <?php if(request()->getGet('search')): ?>
+                        <a href="<?= base_url('/patient') ?>" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Clear
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="text-dark fw-bold">Sort by ID:</span>
+                    <div class="btn-group" role="group">
+                        <a href="<?= base_url('/patient?sort=asc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'asc') ? 'btn-info' : 'btn-outline-info' ?>">
+                            <i class="fas fa-arrow-up"></i> Ascending
+                        </a>
+                        <a href="<?= base_url('/patient?sort=desc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'desc' || empty(request()->getGet('sort'))) ? 'btn-info' : 'btn-outline-info' ?>">
+                            <i class="fas fa-arrow-down"></i> Descending
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div class="table-responsive">
         <table class="table table-vcenter card-table">
             <thead>
@@ -36,7 +69,7 @@
                     <?php foreach($patient as $p): ?>
                         <tr>
                             <td><span class="badge badge-primary"><?= esc($p['patient_id']) ?></span></td>
-                            <td><?= (!empty($p['user_id'])) ? esc($p['user_id']) : '<span class="badge badge-secondary">Walk In</span>' ?></td>
+                            <td><?= (!empty($p['user_id'])) ? esc($p['user_id']) : '<span class="badge bg-warning text-dark">Walk In</span>' ?></td>
                             <td><?= esc($p['last_name']) . ', ' . esc($p['first_name']) . ' ' . esc($p['middle_name']) ?></td>
                             <td><?= esc($p['gender']) ?></td>
                             <td><?= esc($p['created_at']) ?></td>

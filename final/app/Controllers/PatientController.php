@@ -16,8 +16,40 @@ class PatientController extends BaseController
         }
 
         $patient = new PatientModel();
+        $data['patient'] = [];
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
-        $data['patient'] = $patient->findAll();
+        // Student and Staff can only see their own patient record
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $myPatient = $patient->where('user_id', $user_id)->first();
+            
+            if($myPatient){
+                $data['patient'] = [$myPatient];
+            }
+        }
+        // Admin and Nurse can see all patient records
+        else if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'){
+            if ($search) {
+                $data['patient'] = $patient->groupStart()
+                    ->like('first_name', $search)
+                    ->orLike('middle_name', $search)
+                    ->orLike('last_name', $search)
+                    ->orLike('patient_id', $search)
+                    ->orLike('contact_no', $search)
+                    ->groupEnd()
+                    ->orderBy('patient_id', $sort)
+                    ->findAll();
+            } else {
+                $data['patient'] = $patient->orderBy('patient_id', $sort)->findAll();
+            }
+        }
 
         return view('Patient/patient', $data);
     }
@@ -39,6 +71,16 @@ class PatientController extends BaseController
 
         $patient = new PatientModel();
         $user = new UserModel();
+
+        // Student and Staff can only create patient record for themselves
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $existingPatient = $patient->where('user_id', $user_id)->first();
+            
+            if($existingPatient){
+                return redirect()->to('/patient/add')->with('message', 'Error: You already have a patient record');
+            }
+        }
 
         $first_name =  request()->getPost('first_name');
         $middle_name =  request()->getPost('middle_name');
@@ -130,8 +172,33 @@ class PatientController extends BaseController
             return redirect()->to('/patient')->with('message', 'Error: Patient not found');
         }
 
+        // Student and Staff can only edit their own patient record
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            if($exist['user_id'] != $user_id){
+                return redirect()->to('/patient')->with('message', 'Error: You can only edit your own patient record');
+            }
+        }
+
+        // Preserve existing user_id when the edit form does not include the field
+        $userModel = new UserModel();
+        $user_id_post = request()->getPost('user_id');
+        if ($user_id_post !== null) {
+            // Field was present in POST (even if empty) - interpret empty as null
+            $user_id = $user_id_post ?: null;
+            if ($user_id) {
+                $userExists = $userModel->find($user_id);
+                if (!$userExists) {
+                    return redirect()->to('/patient/edit/'.$id)->with('message', 'Error: User ID does not exist');
+                }
+            }
+        } else {
+            // Field not provided in form - keep previous value
+            $user_id = $exist['user_id'];
+        }
+
         $data = [
-            'user_id' => request()->getPost('user_id') ?: null,
+            'user_id' => $user_id,
             'first_name' => request()->getPost('first_name'),
             'middle_name' => request()->getPost('middle_name'),
             'last_name' => request()->getPost('last_name'),
@@ -161,6 +228,14 @@ class PatientController extends BaseController
         $exist = $patient->find($id);
         if(!$exist){
             return redirect()->to('/patient')->with('message', 'Error: Patient not found');
+        }
+
+        // Student and Staff can only delete their own patient record
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            if($exist['user_id'] != $user_id){
+                return redirect()->to('/patient')->with('message', 'Error: You can only delete your own patient record');
+            }
         }
 
         $patient->delete($id);

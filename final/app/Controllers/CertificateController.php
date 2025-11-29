@@ -16,8 +16,54 @@ class CertificateController extends BaseController
         }
 
         $cert = new CertificateModel();
+        $patientModel = new PatientModel();
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
-        $data['certificate'] = $cert->findAll();
+        // Student and Staff can only see their own certificates
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $myPatient = $patientModel->where('user_id', $user_id)->first();
+            
+            if($myPatient){
+                if ($search) {
+                    $data['certificate'] = $cert->where('patient_id', $myPatient['patient_id'])
+                        ->groupStart()
+                        ->like('certificate_id', $search)
+                        ->orLike('certificate_type', $search)
+                        ->groupEnd()
+                        ->orderBy('certificate_id', $sort)
+                        ->findAll();
+                } else {
+                    $data['certificate'] = $cert->where('patient_id', $myPatient['patient_id'])
+                        ->orderBy('certificate_id', $sort)
+                        ->findAll();
+                }
+            }
+            else{
+                $data['certificate'] = [];
+            }
+        }
+        else{
+            // Admin and Nurse can see all certificates
+            if ($search) {
+                $data['certificate'] = $cert
+                    ->groupStart()
+                    ->like('certificate_id', $search)
+                    ->orLike('patient_id', $search)
+                    ->orLike('certificate_type', $search)
+                    ->groupEnd()
+                    ->orderBy('certificate_id', $sort)
+                    ->findAll();
+            } else {
+                $data['certificate'] = $cert->orderBy('certificate_id', $sort)->findAll();
+            }
+        }
 
         return view('Certificate/certificate', $data);
     }
@@ -28,6 +74,11 @@ class CertificateController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can add certificates
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/certificate')->with('message', 'Error: You do not have permission to add certificates');
+        }
+
         return view('Certificate/add_certificate');
     }
 
@@ -35,6 +86,11 @@ class CertificateController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can create certificates
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/certificate')->with('message', 'Error: You do not have permission to create certificates');
         }
 
         $cert = new CertificateModel();
@@ -72,11 +128,22 @@ class CertificateController extends BaseController
         }
 
         $cert = new CertificateModel();
+        $patientModel = new PatientModel();
 
         $data['cert'] = $cert->find($id);
 
         if(!$data['cert']){
             return redirect()->to('/certificate')->with('message', 'Error: Certificate not found');
+        }
+
+        // Student and Staff can only view their own certificate
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $myPatient = $patientModel->where('user_id', $user_id)->first();
+            
+            if(!$myPatient || $data['cert']['patient_id'] != $myPatient['patient_id']){
+                return redirect()->to('/certificate')->with('message', 'Error: You can only view your own certificate');
+            }
         }
 
         return view('Certificate/view_certificate', $data);
@@ -86,6 +153,11 @@ class CertificateController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can edit certificates
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/certificate')->with('message', 'Error: You do not have permission to edit certificates');
         }
 
         $cert = new CertificateModel();
@@ -103,6 +175,11 @@ class CertificateController extends BaseController
     {
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('message', 'Please login to continue');
+        }
+
+        // Only admin and nurse can update certificates
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/certificate')->with('message', 'Error: You do not have permission to update certificates');
         }
 
         $cert = new CertificateModel();
@@ -129,6 +206,11 @@ class CertificateController extends BaseController
             return redirect()->to('/login')->with('message', 'Please login to continue');
         }
 
+        // Only admin and nurse can delete certificates
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            return redirect()->to('/certificate')->with('message', 'Error: You do not have permission to delete certificates');
+        }
+
         $cert = new CertificateModel();
         
         $exist = $cert->find($id);
@@ -149,11 +231,22 @@ class CertificateController extends BaseController
 
         $cert = new CertificateModel();
         $patient = new PatientModel();
+        $patientModel = new PatientModel();
 
         $data['cert'] = $cert->find($id);
 
         if(!$data['cert']){
             return redirect()->to('/certificate')->with('message', 'Error: Certificate not found');
+        }
+
+        // Student and Staff can only export their own certificate
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $myPatient = $patientModel->where('user_id', $user_id)->first();
+            
+            if(!$myPatient || $data['cert']['patient_id'] != $myPatient['patient_id']){
+                return redirect()->to('/certificate')->with('message', 'Error: You can only export your own certificate');
+            }
         }
 
         $data['patient'] = $patient->find($data['cert']['patient_id']);

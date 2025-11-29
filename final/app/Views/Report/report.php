@@ -1,6 +1,7 @@
 <?= $this->extend('layouts/sidebar') ?>
 
 <?= $this->section('mainContent') ?>
+
 <br><br>
 <div class="page-header d-print-none">
     <div class="row align-items-center mb-3">
@@ -10,11 +11,10 @@
             </h2>
             <p class="text-muted">Generate and manage system reports</p>
         </div>
-    </div>
 </div>
-
-<!-- Generate Report Section -->
-<div class="card mb-3">
+</div>
+<br>
+<div class="card">
     <div class="card-header">
         <h3 class="card-title">Generate New Report</h3>
     </div>
@@ -43,7 +43,37 @@
 <!-- Reports List Section -->
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">List of Reports</h3>
+
+        <form method="get" action="<?= base_url('/report') ?>" class="row g-3">
+            <div class="col-12">
+                <div class="d-flex gap-3">
+                    <div class="flex-grow-1">
+                        <input type="text" name="search" class="form-control form-control-lg" placeholder="Search by report ID, type, date..." value="<?= esc(request()->getGet('search') ?? '') ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <?php if(request()->getGet('search')): ?>
+                        <a href="<?= base_url('/report') ?>" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Clear
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="text-dark fw-bold">Sort by ID:</span>
+                    <div class="btn-group" role="group">
+                        <a href="<?= base_url('/report?sort=asc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'asc') ? 'btn-info' : 'btn-outline-info' ?>">
+                            <i class="fas fa-arrow-up"></i> Ascending
+                        </a>
+                        <a href="<?= base_url('/report?sort=desc' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '')) ?>" class="btn <?= (request()->getGet('sort') === 'desc' || empty(request()->getGet('sort'))) ? 'btn-info' : 'btn-outline-info' ?>">
+                            <i class="fas fa-arrow-down"></i> Descending
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
     <form id="bulkDeleteForm" action="<?= base_url('/report/bulk-delete') ?>" method="post">

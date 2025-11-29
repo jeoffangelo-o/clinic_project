@@ -19,6 +19,13 @@ class AppointmentController extends BaseController
 
         $appoint = new AppointmentModel;
         $patient = new PatientModel;
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
         $data['appoint'] = [];
 
@@ -31,9 +38,23 @@ class AppointmentController extends BaseController
                 session()->set([
                     'hasPatient' => true
                 ]);
-                $data['appoint'] = $appoint
-                                ->where('patient_id', $exist['patient_id'])
-                                ->findAll();
+                if ($search) {
+                    $data['appoint'] = $appoint
+                                    ->where('patient_id', $exist['patient_id'])
+                                    ->groupStart()
+                                    ->like('appointment_id', $search)
+                                    ->orLike('purpose', $search)
+                                    ->orLike('status', $search)
+                                    ->orLike('remarks', $search)
+                                    ->groupEnd()
+                                    ->orderBy('appointment_id', $sort)
+                                    ->findAll();
+                } else {
+                    $data['appoint'] = $appoint
+                                    ->where('patient_id', $exist['patient_id'])
+                                    ->orderBy('appointment_id', $sort)
+                                    ->findAll();
+                }
             }
             else{
                 session()->set([
@@ -51,16 +72,43 @@ class AppointmentController extends BaseController
             }
 
             if($stats === 'all'){
-                $data['appoint'] = $appoint->orderBy('created_at', 'asc')->findAll();
+                if ($search) {
+                    $data['appoint'] = $appoint
+                                    ->groupStart()
+                                    ->like('appointment_id', $search)
+                                    ->orLike('patient_id', $search)
+                                    ->orLike('purpose', $search)
+                                    ->orLike('status', $search)
+                                    ->orLike('remarks', $search)
+                                    ->groupEnd()
+                                    ->orderBy('appointment_id', $sort)
+                                    ->findAll();
+                } else {
+                    $data['appoint'] = $appoint->orderBy('appointment_id', $sort)->findAll();
+                }
             }
             else{
-                $data['appoint'] = $appoint
+                if ($search) {
+                    $data['appoint'] = $appoint
                                     ->where('status', $stats)
-                                    ->orderBy('created_at', 'asc')
+                                    ->groupStart()
+                                    ->like('appointment_id', $search)
+                                    ->orLike('patient_id', $search)
+                                    ->orLike('purpose', $search)
+                                    ->orLike('remarks', $search)
+                                    ->groupEnd()
+                                    ->orderBy('appointment_id', $sort)
                                     ->findAll();
+                } else {
+                    $data['appoint'] = $appoint
+                                    ->where('status', $stats)
+                                    ->orderBy('appointment_id', $sort)
+                                    ->findAll();
+                }
             }
 
             session()->set('appointment_status', $stats);
+            session()->set('hasPatient', true); // Admin and nurse have access to all appointments
             
         }
 

@@ -1,10 +1,10 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
-
+<br><br>
 <div class="page-header d-print-none">
     <h2 class="page-title">Edit Consultation</h2>
 </div>
-
+<br>
 <?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'):  ?>
 
     <div class="card">

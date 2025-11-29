@@ -24,8 +24,58 @@ class ConsultationController extends BaseController
         $consult = new ConsultationModel();
         $medicineModel = new ConsultationMedicineModel();
         $inventoryModel = new InventoryModel();
+        $patientModel = new PatientModel();
+        $search = request()->getGet('search') ?? '';
+        $sort = request()->getGet('sort') ?? 'asc';
+        
+        // Validate sort parameter
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
 
-        $consultations = $consult->findAll();
+        // Get consultations based on role
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            // Student and Staff can only see their own consultations
+            $user_id = session()->get('user_id');
+            $myPatient = $patientModel->where('user_id', $user_id)->first();
+            
+            if($myPatient){
+                if ($search) {
+                    $consultations = $consult->where('patient_id', $myPatient['patient_id'])
+                        ->groupStart()
+                        ->like('consultation_id', $search)
+                        ->orLike('diagnosis', $search)
+                        ->orLike('treatment', $search)
+                        ->groupEnd()
+                        ->orderBy('consultation_id', $sort)
+                        ->findAll();
+                } else {
+                    $consultations = $consult->where('patient_id', $myPatient['patient_id'])
+                        ->orderBy('consultation_id', $sort)
+                        ->findAll();
+                }
+            }
+            else{
+                $consultations = [];
+            }
+        }
+        else{
+            // Admin and Nurse can see all consultations
+            if ($search) {
+                $consultations = $consult
+                    ->groupStart()
+                    ->like('consultation_id', $search)
+                    ->orLike('patient_id', $search)
+                    ->orLike('nurse_id', $search)
+                    ->orLike('diagnosis', $search)
+                    ->orLike('treatment', $search)
+                    ->groupEnd()
+                    ->orderBy('consultation_id', $sort)
+                    ->findAll();
+            } else {
+                $consultations = $consult->orderBy('consultation_id', $sort)->findAll();
+            }
+        }
         
         // Fetch medicines for each consultation
         foreach($consultations as &$c) {
@@ -165,11 +215,22 @@ class ConsultationController extends BaseController
         $consult = new ConsultationModel();
         $medicineModel = new ConsultationMedicineModel();
         $inventoryModel = new InventoryModel();
+        $patientModel = new PatientModel();
 
         $data['consult'] = $consult->find($id);
 
         if(!$data['consult']){
             return redirect()->to('/consultation')->with('message', 'Error: Consultation not found');
+        }
+
+        // Student and Staff can only edit their own consultation
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $myPatient = $patientModel->where('user_id', $user_id)->first();
+            
+            if(!$myPatient || $data['consult']['patient_id'] != $myPatient['patient_id']){
+                return redirect()->to('/consultation')->with('message', 'Error: You can only edit your own consultation');
+            }
         }
 
         // Fetch medicines for this consultation
@@ -219,10 +280,21 @@ class ConsultationController extends BaseController
         $consult_med = new ConsultationMedicineModel();
         $inventory = new InventoryModel();
         $inv_log = new InventoryLogModel();
+        $patientModel = new PatientModel();
 
         $exist = $consult->find($id);
         if(!$exist){
             return redirect()->to('/consultation')->with('message', 'Error: Consultation not found');
+        }
+
+        // Student and Staff can only delete their own consultation
+        if(session()->get('role') === 'student' || session()->get('role') === 'staff'){
+            $user_id = session()->get('user_id');
+            $myPatient = $patientModel->where('user_id', $user_id)->first();
+            
+            if(!$myPatient || $exist['patient_id'] != $myPatient['patient_id']){
+                return redirect()->to('/consultation')->with('message', 'Error: You can only delete your own consultation');
+            }
         }
 
         // Rollback inventory for any medicines allocated to this consultation

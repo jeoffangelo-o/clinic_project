@@ -237,6 +237,27 @@
             border-radius: 0;
         }
 
+        .flash-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         .page-title {
             font-size: 1.75rem;
             font-weight: 600;
@@ -444,6 +465,15 @@
 <body>
     <!-- Flash Message Container - Top Right -->
     <div class="flash-message-container" id="flashContainer"></div>
+    <?php // Server-side emit of session flash so client JS can pick it up and move into the toast container ?>
+    <?php if(session()->getFlashData('message')):
+        $message = session()->getFlashData('message');
+        $alertType = (stripos($message, 'error') !== false || stripos($message, 'not found') !== false) ? 'danger' : 'success';
+    ?>
+        <div data-flash-message="<?= esc($alertType) ?>" style="display:none">
+            <?= $message ?>
+        </div>
+    <?php endif; ?>
 
     <!-- Header/Navbar -->
     <header class="navbar navbar-expand-md navbar-light sticky-top d-print-none">
@@ -481,59 +511,53 @@
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
 
     <script>
-        // Global Flash Message Handler
+        // Improved Global Flash Message Handler
+        // - Collects elements with `data-flash-message`
+        // - Also collects inline `.alert` elements inside `.page-content`
+        // - Deduplicates identical messages and moves them into the top-right container
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.getElementById('flashContainer');
-            
-            // Find all flash messages in the page
-            const flashMessages = document.querySelectorAll('[data-flash-message]');
             const shown = new Set();
 
-            flashMessages.forEach(msg => {
+            function normalize(text) {
+                return (text || '').replace(/\s+/g, ' ').trim();
+            }
+
+            function pushToast(content, type) {
+                const normalized = normalize(content);
+                if (!normalized) return;
+                if (shown.has(normalized)) return;
+                shown.add(normalized);
+
+                const alertClass = `alert-${type}`;
+                const toast = document.createElement('div');
+                toast.className = `alert ${alertClass} flash-message alert-dismissible fade show`;
+                toast.setAttribute('role', 'alert');
+                toast.innerHTML = `${content}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+
+                container.appendChild(toast);
+
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    try { new bootstrap.Alert(toast).close(); } catch (e) { /* ignore */ }
+                }, 5000);
+            }
+
+            // 1) Handle elements explicitly marked with data-flash-message
+            document.querySelectorAll('[data-flash-message]').forEach(msg => {
                 try {
-                    const content = msg.textContent || '';
-                    // normalize whitespace to avoid minor differences causing duplicates
-                    const normalized = content.replace(/\s+/g, ' ').trim();
-
-                    // Skip empty messages
-                    if(!normalized) return;
-
-                    // Deduplicate by normalized content
-                    if(shown.has(normalized)) {
-                        // remove duplicate element to avoid any accidental display
-                        msg.remove();
-                        return;
-                    }
-
-                    // Mark as processed to prevent re-processing this same element
-                    msg.setAttribute('data-processed', 'true');
-                    shown.add(normalized);
-
+                    const content = msg.innerHTML || msg.textContent || '';
                     const type = msg.dataset.flashMessage || 'info';
-                    const alertClass = `alert-${type}`;
-
-                    // Create toast element
-                    const toast = document.createElement('div');
-                    toast.className = `alert ${alertClass} flash-message alert-dismissible fade show`;
-                    toast.setAttribute('role', 'alert');
-
-                    toast.innerHTML = `\n                        ${content}\n                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>\n                    `;
-
-                    container.appendChild(toast);
-
-                    // Remove original element from DOM to be safe
+                    pushToast(content, type);
                     msg.remove();
-
-                    // Auto-dismiss after 5 seconds
-                    setTimeout(() => {
-                        const bsAlert = new bootstrap.Alert(toast);
-                        bsAlert.close();
-                    }, 5000);
                 } catch (e) {
-                    // Ignore malformed flash entries
                     console.warn('Flash handling error', e);
                 }
             });
+
+            // 2) Note: We intentionally no longer move all inline `.alert` elements.
+            // Flash messages should be emitted server-side as `data-flash-message` (see above)
+            // to avoid accidentally relocating persistent alerts that are part of the page layout.
         });
     </script>
 
