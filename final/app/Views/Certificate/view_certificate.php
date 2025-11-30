@@ -13,7 +13,7 @@
             <a href="/certificate" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
-        </div>
+        </div> 
     </div>
 </div>
 <br>
