@@ -167,11 +167,11 @@ class AppointmentController extends BaseController
             return redirect()->to('/appointment')->with('message', 'Error: Appointment not found');
         }
 
-        if(session()->get('activity') === 'save'){
+        if(request()->getPost('activity') === 'save'){
 
             $data = [
                 'status' => request()->getPost('status'),
-                'remarks' => request()->getPost('remarks'),
+                'remarks' => request()->getPost('remarks') ?? '',
             ];
 
             $appoint->update($id, $data);

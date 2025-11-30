@@ -19,6 +19,7 @@
     </div>
 </div>
 <br>
+
 <div class="card">
     <div class="card-header">
         <form method="get" action="<?= base_url('/patient') ?>" class="row g-3">
@@ -49,11 +50,13 @@
                         </a>
                     </div>
                 </div>
-                    </div>
-                </div>
             </div>
         </form>
     </div>
+</div>
+<br>
+
+<div class="card">
     <div class="table-responsive">
         <table class="table table-vcenter card-table">
             <thead>
@@ -99,5 +102,3 @@
 </div>
 
 <?= $this->endSection() ?>
-</body>
-</html>

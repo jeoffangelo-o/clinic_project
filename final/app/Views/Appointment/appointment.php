@@ -72,89 +72,70 @@
 </div>
 <br>
 
-<?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'): ?>
+<?php if(!empty($appoint)): ?>
     <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <a href="<?= base_url('/appointment?status=all' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '') . (request()->getGet('sort') ? '&sort=' . esc(request()->getGet('sort')) : '')) ?>" class="nav-link <?= (request()->getGet('status') ?? 'all') === 'all' ? 'active' : '' ?>">All</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a href="<?= base_url('/appointment?status=pending' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '') . (request()->getGet('sort') ? '&sort=' . esc(request()->getGet('sort')) : '')) ?>" class="nav-link <?= (request()->getGet('status') ?? 'all') === 'pending' ? 'active' : '' ?>">Pending</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a href="<?= base_url('/appointment?status=approved' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '') . (request()->getGet('sort') ? '&sort=' . esc(request()->getGet('sort')) : '')) ?>" class="nav-link <?= (request()->getGet('status') ?? 'all') === 'approved' ? 'active' : '' ?>">Approved</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a href="<?= base_url('/appointment?status=rejected' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '') . (request()->getGet('sort') ? '&sort=' . esc(request()->getGet('sort')) : '')) ?>" class="nav-link <?= (request()->getGet('status') ?? 'all') === 'rejected' ? 'active' : '' ?>">Rejected</a>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <a href="<?= base_url('/appointment?status=completed' . (request()->getGet('search') ? '&search=' . esc(request()->getGet('search')) : '') . (request()->getGet('sort') ? '&sort=' . esc(request()->getGet('sort')) : '')) ?>" class="nav-link <?= (request()->getGet('status') ?? 'all') === 'completed' ? 'active' : '' ?>">Completed</a>
-                        </li>
-                    </ul>
+        <?php foreach($appoint as $a): ?>
+            <div class="col-md-4">
+                <div class="card mb-3 h-100">
+                    <div class="card-header">
+                        <h3 class="card-title">Appointment #<?= esc($a['appointment_id']) ?></h3>
+                        <div class="card-options">
+                            <?php
+                                $statusClass = 'secondary';
+                                if($a['status'] === 'pending') {
+                                    $statusClass = 'warning';
+                                } else if($a['status'] === 'approved') {
+                                    $statusClass = 'success';
+                                } else if($a['status'] === 'rejected') {
+                                    $statusClass = 'danger';
+                                } else if($a['status'] === 'completed') {
+                                    $statusClass = 'info';
+                                }
+                            ?>
+                            <span class="badge badge-<?= $statusClass ?>"><?= ucfirst(esc($a['status'])) ?></span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-secondary mb-2"><small><i class="fas fa-user"></i> <strong><?= esc($a['patient_name'] ?? 'N/A') ?></strong></small></p>
+                        <p class="text-secondary mb-2"><small><i class="fas fa-calendar"></i> <?= esc($a['appointment_date']) ?></small></p>
+                        <p class="text-secondary mb-3"><small><i class="fas fa-stethoscope"></i> <?= esc($a['purpose'] ?? 'N/A') ?></small></p>
+                        
+                        <?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'): ?>
+                            <form method="post" action="<?= base_url('/appointment/update/' . $a['appointment_id']) ?>" class="mb-3">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="activity" value="save">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <select name="status" class="form-select form-select-sm">
+                                        <option value="pending" <?= esc($a['status']) === 'pending' ? 'selected' : '' ?>>Pending</option>
+                                        <option value="approved" <?= esc($a['status']) === 'approved' ? 'selected' : '' ?>>Approved</option>
+                                        <option value="rejected" <?= esc($a['status']) === 'rejected' ? 'selected' : '' ?>>Rejected</option>
+                                        <option value="completed" <?= esc($a['status']) === 'completed' ? 'selected' : '' ?>>Completed</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary" title="Save status">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a href="<?= base_url('/appointment/edit/' . $a['appointment_id']) ?>" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="<?= base_url('/appointment/delete/' . $a['appointment_id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this appointment?')">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
+        <?php endforeach; ?>
     </div>
-    <br>
+<?php else: ?>
+    <div class="empty">
+        <div class="empty-header"><i class="fas fa-calendar"></i></div>
+        <p class="empty-title">No Appointments Found</p>
+        <p class="empty-subtitle">Check back later or create a new appointment</p>
+    </div>
 <?php endif; ?>
-
-<div class="card">
-    <div class="table-responsive">
-        <table class="table table-vcenter card-table">
-            <thead>
-                <tr>
-                    <th>Appointment ID</th>
-                    <th>Patient Name</th>
-                    <th>Appointment Date</th>
-                    <th>Purpose</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if(!empty($appoint)): ?>
-                    <?php foreach($appoint as $a): ?>
-                        <tr>
-                            <td><span class="badge badge-primary"><?= esc($a['appointment_id']) ?></span></td>
-                            <td><?= esc($a['patient_name'] ?? 'N/A') ?></td>
-                            <td><?= esc($a['appointment_date']) ?></td>
-                            <td><?= esc($a['purpose'] ?? 'N/A') ?></td>
-                            <td>
-                                <?php
-                                    $statusClass = 'secondary';
-                                    if($a['status'] === 'pending') {
-                                        $statusClass = 'warning';
-                                    } else if($a['status'] === 'approved') {
-                                        $statusClass = 'success';
-                                    } else if($a['status'] === 'rejected') {
-                                        $statusClass = 'danger';
-                                    } else if($a['status'] === 'completed') {
-                                        $statusClass = 'info';
-                                    }
-                                ?>
-                                <span class="badge badge-<?= $statusClass ?>"><?= ucfirst(esc($a['status'])) ?></span>
-                            </td>
-                            <td>
-                                <a href="<?= base_url('/appointment/edit/' . $a['appointment_id']) ?>" class="btn btn-sm btn-ghost-secondary">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <a href="<?= base_url('/appointment/delete/' . $a['appointment_id']) ?>" class="btn btn-sm btn-ghost-danger" onclick="return confirm('Delete this appointment?')">
-                                    <i class="fas fa-trash"></i> Delete
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No appointments found</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
 
 <?= $this->endSection() ?>

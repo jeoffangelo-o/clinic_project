@@ -1,6 +1,6 @@
 <?= $this->extend('layouts/sidebar') ?>
 <?= $this->section('mainContent') ?>
-
+<br><br>
 <div class="page-header">
     <div class="row align-items-center">
         <div class="col">
@@ -16,7 +16,7 @@
         </div>
     </div>
 </div>
-
+<br>
 <?php if(!empty($cert)): ?>
 
 <div class="card">

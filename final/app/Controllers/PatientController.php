@@ -94,13 +94,19 @@ class PatientController extends BaseController
             }
         }
 
-        $exist = $patient->groupStart()
+        // Build query to check if patient already exists
+        $query = $patient->groupStart()
                         ->where('first_name', $first_name)
                         ->where('middle_name', $middle_name)
                         ->where('last_name', $last_name)
-                        ->groupEnd()
-                        ->orWhere('user_id', $user_id)
-                        ->first();
+                        ->groupEnd();
+
+        // Only check user_id if it's not null
+        if($user_id){
+            $query = $query->orWhere('user_id', $user_id);
+        }
+
+        $exist = $query->first();
 
         if($exist){
             return redirect()->to('/patient/add')->with('message', 'Patient Already Exists');
