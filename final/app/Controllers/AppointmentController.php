@@ -20,11 +20,11 @@ class AppointmentController extends BaseController
         $appoint = new AppointmentModel;
         $patient = new PatientModel;
         $search = request()->getGet('search') ?? '';
-        $sort = request()->getGet('sort') ?? 'asc';
+        $sort = request()->getGet('sort') ?? 'desc';
         
         // Validate sort parameter
         if (!in_array($sort, ['asc', 'desc'])) {
-            $sort = 'asc';
+            $sort = 'desc';
         }
 
         $data['appoint'] = [];
@@ -38,23 +38,23 @@ class AppointmentController extends BaseController
                 session()->set([
                     'hasPatient' => true
                 ]);
+                
+                // Build base query with join
+                $query = $appoint->select('appointments.*, CONCAT(patients.last_name, ", ", patients.first_name, " ", patients.middle_name) as patient_name')
+                                 ->join('patients', 'appointments.patient_id = patients.patient_id')
+                                 ->where('appointments.patient_id', $exist['patient_id']);
+                
                 if ($search) {
-                    $data['appoint'] = $appoint
-                                    ->where('patient_id', $exist['patient_id'])
-                                    ->groupStart()
-                                    ->like('appointment_id', $search)
-                                    ->orLike('purpose', $search)
-                                    ->orLike('status', $search)
-                                    ->orLike('remarks', $search)
-                                    ->groupEnd()
-                                    ->orderBy('appointment_id', $sort)
-                                    ->findAll();
-                } else {
-                    $data['appoint'] = $appoint
-                                    ->where('patient_id', $exist['patient_id'])
-                                    ->orderBy('appointment_id', $sort)
-                                    ->findAll();
+                    $query = $query->groupStart()
+                                   ->like('appointments.appointment_id', $search)
+                                   ->orLike('appointments.purpose', $search)
+                                   ->orLike('appointments.status', $search)
+                                   ->orLike('appointments.remarks', $search)
+                                   ->groupEnd();
                 }
+                
+                $data['appoint'] = $query->orderBy('appointments.appointment_id', $sort)
+                                        ->findAll();
             }
             else{
                 session()->set([
@@ -63,53 +63,36 @@ class AppointmentController extends BaseController
             }
         }
         else if(session()->get('role') === 'nurse' || session()->get('role') === 'admin' ){
-            $stats = request()->getGet('status');
-            $allowedStatus = ['all', 'pending', 'approved', 'cancelled', 'completed'];
+            $status = request()->getGet('status') ?? 'all';
+            $allowedStatus = ['all', 'pending', 'approved', 'rejected', 'completed'];
 
             // Validate status parameter
-            if(empty($stats) || !in_array($stats, $allowedStatus)){
-                $stats = 'all';
+            if(empty($status) || !in_array($status, $allowedStatus)){
+                $status = 'all';
             }
 
-            if($stats === 'all'){
-                if ($search) {
-                    $data['appoint'] = $appoint
-                                    ->groupStart()
-                                    ->like('appointment_id', $search)
-                                    ->orLike('patient_id', $search)
-                                    ->orLike('purpose', $search)
-                                    ->orLike('status', $search)
-                                    ->orLike('remarks', $search)
-                                    ->groupEnd()
-                                    ->orderBy('appointment_id', $sort)
-                                    ->findAll();
-                } else {
-                    $data['appoint'] = $appoint->orderBy('appointment_id', $sort)->findAll();
-                }
-            }
-            else{
-                if ($search) {
-                    $data['appoint'] = $appoint
-                                    ->where('status', $stats)
-                                    ->groupStart()
-                                    ->like('appointment_id', $search)
-                                    ->orLike('patient_id', $search)
-                                    ->orLike('purpose', $search)
-                                    ->orLike('remarks', $search)
-                                    ->groupEnd()
-                                    ->orderBy('appointment_id', $sort)
-                                    ->findAll();
-                } else {
-                    $data['appoint'] = $appoint
-                                    ->where('status', $stats)
-                                    ->orderBy('appointment_id', $sort)
-                                    ->findAll();
-                }
+            // Build base query with join
+            $query = $appoint->select('appointments.*, CONCAT(patients.last_name, ", ", patients.first_name, " ", patients.middle_name) as patient_name')
+                             ->join('patients', 'appointments.patient_id = patients.patient_id');
+
+            if($status !== 'all'){
+                $query = $query->where('appointments.status', $status);
             }
 
-            session()->set('appointment_status', $stats);
-            session()->set('hasPatient', true); // Admin and nurse have access to all appointments
+            if ($search) {
+                $query = $query->groupStart()
+                               ->like('appointments.appointment_id', $search)
+                               ->orLike('appointments.patient_id', $search)
+                               ->orLike('appointments.purpose', $search)
+                               ->orLike('appointments.status', $search)
+                               ->orLike('appointments.remarks', $search)
+                               ->groupEnd();
+            }
             
+            $data['appoint'] = $query->orderBy('appointments.appointment_id', $sort)
+                                     ->findAll();
+
+            session()->set('hasPatient', true); // Admin and nurse have access to all appointments
         }
 
         

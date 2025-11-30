@@ -18,6 +18,15 @@ class UserController extends BaseController
         $user = new UserModel();
 
         $username =  request()->getPost('username');
+        $password =  request()->getPost('password');
+        $email =  request()->getPost('email');
+        $role =  request()->getPost('role');
+
+        // Validate password requirements
+        $passwordErrors = $this->validatePassword($password);
+        if (!empty($passwordErrors)) {
+            return redirect()->to('/register')->with('message', implode('; ', $passwordErrors));
+        }
 
         $exist = $user->where('username', $username)->first();
 
@@ -25,15 +34,11 @@ class UserController extends BaseController
             return redirect()->to('/register')->with('message', 'Username Already Exists');
         }
 
-        $email =  request()->getPost('email');
         $existingEmail = $user->where('email', $email)->first();
 
         if($existingEmail){
             return redirect()->to('/register')->with('message', 'Email Already Exists');
         }
-
-        $password =  request()->getPost('password');
-        $role =  request()->getPost('role');
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -48,6 +53,41 @@ class UserController extends BaseController
         $user->insert($data);
         
         return redirect()->to('/register')->with('message', 'Registered Successfully');
+    }
+
+    /**
+     * Validate password requirements
+     * Minimum 8 characters
+     * At least one uppercase letter
+     * At least one lowercase letter
+     * At least one digit
+     * At least one special character
+     */
+    private function validatePassword($password)
+    {
+        $errors = [];
+
+        if (strlen($password) < 8) {
+            $errors[] = 'Password must be at least 8 characters long';
+        }
+
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = 'Password must contain at least one uppercase letter';
+        }
+
+        if (!preg_match('/[a-z]/', $password)) {
+            $errors[] = 'Password must contain at least one lowercase letter';
+        }
+
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = 'Password must contain at least one number';
+        }
+
+        if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};:\'",.<>?\/\\|`~]/', $password)) {
+            $errors[] = 'Password must contain at least one special character (!@#$%^&*)';
+        }
+
+        return $errors;
     }
 
     public function login()
@@ -105,11 +145,11 @@ class UserController extends BaseController
 
         $user = new UserModel();
         $search = request()->getGet('search') ?? '';
-        $sort = request()->getGet('sort') ?? 'asc';
+        $sort = request()->getGet('sort') ?? 'desc';
         
         // Validate sort parameter
         if (!in_array($sort, ['asc', 'desc'])) {
-            $sort = 'asc';
+            $sort = 'desc';
         }
 
         if ($search) {

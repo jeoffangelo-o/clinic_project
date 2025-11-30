@@ -24,7 +24,7 @@
         <div class="row mb-3">
                     <div class="col-md-6">
                         <h5 class="text-dark fw-bold mb-1">Certificate ID</h5>
-                        <p class="mb-0"><span class="badge bg-blue">#<?= esc($cert['certificate_id']) ?></span></p>
+                        <p class="mb-0"><span class="badge bg-blue text-white">#<?= esc($cert['certificate_id']) ?></span></p>
                     </div>
                     <div class="col-md-6">
                         <h5 class="text-dark fw-bold mb-1">Patient ID</h5>

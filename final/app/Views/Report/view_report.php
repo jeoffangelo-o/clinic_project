@@ -24,7 +24,7 @@
                     <tbody>
                         <tr>
                             <td style="width: 25%;"><strong class="text-dark">Report ID</strong></td>
-                            <td><span class="badge bg-blue">#<?= esc($rep['report_id']) ?></span></td>
+                            <td><span class="badge bg-blue text-white">#<?= esc($rep['report_id']) ?></span></td>
                         </tr>
                         <tr>
                             <td><strong class="text-dark">Report Type</strong></td>
@@ -119,7 +119,7 @@
                             <tbody>
                                 <?php foreach($report_data['patients'] as $p): ?>
                                 <tr>
-                                    <td><span class="badge bg-blue"><?= esc($p['patient_id']) ?></span></td>
+                                    <td><span class="badge bg-blue text-white"><?= esc($p['patient_id']) ?></span></td>
                                     <td><?= esc($p['last_name']) . ', ' . esc($p['first_name']) . ' ' . esc($p['middle_name']) ?></td>
                                     <td><?= esc(ucfirst($p['gender'])) ?></td>
                                     <td><span class="badge bg-danger"><?= esc($p['blood_type'] ?: 'N/A') ?></span></td>
@@ -161,7 +161,7 @@
                             <tbody>
                                 <?php foreach($report_data['consultations'] as $c): ?>
                                 <tr>
-                                    <td><span class="badge bg-blue"><?= esc($c['consultation_id']) ?></span></td>
+                                    <td><span class="badge bg-blue text-white"><?= esc($c['consultation_id']) ?></span></td>
                                     <td><?= esc($c['patient_id']) ?></td>
                                     <td><?= esc($c['diagnosis']) ?></td>
                                     <td><?= esc($c['treatment'] ?: 'N/A') ?></td>
@@ -207,7 +207,7 @@
                             <tbody>
                                 <?php foreach($report_data['appointments'] as $a): ?>
                                 <tr>
-                                    <td><span class="badge bg-blue"><?= esc($a['appointment_id']) ?></span></td>
+                                    <td><span class="badge bg-blue text-white"><?= esc($a['appointment_id']) ?></span></td>
                                     <td><?= esc($a['patient_id']) ?></td>
                                     <td><?= esc($a['appointment_date']) ?></td>
                                     <td><?= esc($a['purpose'] ?: 'N/A') ?></td>

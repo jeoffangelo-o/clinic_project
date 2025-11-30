@@ -19,7 +19,7 @@
         <div class="row mb-3">
                     <div class="col-md-6">
                         <h5 class="text-dark fw-bold mb-1">Patient ID</h5>
-                        <p class="mb-0"><span class="badge bg-blue">#<?= esc($p['patient_id'])?></span></p>
+                        <p class="mb-0"><span class="badge bg-blue text-white">#<?= esc($p['patient_id'])?></span></p>
                     </div>
                     <div class="col-md-6">
                         <h5 class="text-dark fw-bold mb-1">User ID</h5>
@@ -52,7 +52,7 @@
 
                         <h5 class="text-dark fw-bold mb-1">Blood Type</h5>
                         <p class="mb-3">
-                            <span class="badge bg-danger"><?= esc($p['blood_type'])?></span>
+                            <span class="badge bg-danger text-white"><?= esc($p['blood_type'])?></span>
                         </p>
                     </div>
                 </div>

@@ -56,6 +56,7 @@
     </div>
 </div>
 <br>
+
 <?php if(!empty($consult)): ?>
     <div class="row">
         <?php foreach($consult as $c): ?>
@@ -118,5 +119,3 @@
 <?php endif; ?>
 
 <?= $this->endSection() ?>
-</body>
-</html>

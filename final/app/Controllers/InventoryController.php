@@ -16,11 +16,11 @@ class InventoryController extends BaseController
 
         $inventory = new InventoryModel();
         $search = request()->getGet('search') ?? '';
-        $sort = request()->getGet('sort') ?? 'asc';
+        $sort = request()->getGet('sort') ?? 'desc';
         
         // Validate sort parameter
         if (!in_array($sort, ['asc', 'desc'])) {
-            $sort = 'asc';
+            $sort = 'desc';
         }
 
         if ($search) {

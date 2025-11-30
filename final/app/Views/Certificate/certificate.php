@@ -2,19 +2,25 @@
 <?= $this->section('mainContent') ?>
 
 <br><br>
-<div class="page-header">
-    <div class="row align-items-center">
+<div class="page-header d-print-none">
+    <div class="row align-items-center mb-3">
         <div class="col">
-            <h2 class="page-title">Medical Certificates</h2>
+            <h2 class="page-title">
+                <i class="fas fa-certificate"></i> Medical Certificates
+            </h2>
+            <p class="text-muted">Manage medical certificates</p>
         </div>
         <div class="col-auto">
-            <a href="/certificate/add" class="btn btn-primary">
-                <i class="fa-solid fa-plus"></i> Add Certificate
-            </a>
+            <?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'): ?>
+                <a href="<?= base_url('/certificate/add') ?>" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Certificate
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 <br>
+
 <div class="card">
     <div class="card-header">
         <form method="get" action="<?= base_url('/certificate') ?>" class="row g-3">
@@ -48,6 +54,10 @@
             </div>
         </form>
     </div>
+</div>
+<br>
+
+<div class="card">
     <div class="table-responsive">
         <table class="table table-vcenter card-table">
             <thead>
@@ -55,63 +65,38 @@
                     <th>Certificate ID</th>
                     <th>Patient ID</th>
                     <th>Type</th>
-                    <th>Validity</th>
-                    <th>Issued Date</th>
-                    <th class="w-1">Actions</th>
+                    <th>Validity Start</th>
+                    <th>Validity End</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if(!empty($certificate)): ?>
                     <?php foreach($certificate as $c): ?>
                         <tr>
-                            <td>
-                                <span class="badge bg-blue text-white">#<?= esc($c['certificate_id']) ?></span>
-                            </td>
+                            <td><span class="badge badge-primary">#<?= esc($c['certificate_id']) ?></span></td>
                             <td><?= esc($c['patient_id']) ?></td>
+                            <td><span class="badge badge-outline-secondary"><?= esc(ucfirst(str_replace('_', ' ', $c['certificate_type']))) ?></span></td>
+                            <td><?= esc($c['validity_start'] ?: 'N/A') ?></td>
+                            <td><?= esc($c['validity_end'] ?: 'N/A') ?></td>
                             <td>
-                                <span class="badge bg-primary text-white">
-                                    <?= esc(ucfirst(str_replace('_', ' ', $c['certificate_type']))) ?>
-                                </span>
-                            </td>
-                            <td>
-                                <small class="text-dark">
-                                    <?= esc($c['validity_start'] ?: 'N/A') ?> to <?= esc($c['validity_end'] ?: 'N/A') ?>
-                                </small>
-                            </td>
-                            <td>
-                                <small class="text-muted"><?= esc($c['issued_date']) ?></small>
-                            </td>
-                            <td class="text-end">
-                                <div style="display: flex; gap: 12px; justify-content: flex-end; align-items: center;">
-                                    <a href="<?= base_url('/certificate/view/'.$c['certificate_id'])?>" style="color: #206bc4; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 4px;" title="View">
-                                        <i class="fa-solid fa-eye"></i> View
+                                <a href="<?= base_url('/certificate/view/' . $c['certificate_id']) ?>" class="btn btn-sm btn-ghost-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <?php if(session()->get('role') === 'admin' || session()->get('role') === 'nurse'): ?>
+                                    <a href="<?= base_url('/certificate/edit/' . $c['certificate_id']) ?>" class="btn btn-sm btn-ghost-secondary">
+                                        <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <a href="<?= base_url('/certificate/edit/'.$c['certificate_id'])?>" style="color: #206bc4; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 4px;" title="Edit">
-                                        <i class="fa-solid fa-pencil"></i> Edit
+                                    <a href="<?= base_url('/certificate/delete/' . $c['certificate_id']) ?>" class="btn btn-sm btn-ghost-danger" onclick="return confirm('Delete certificate #<?= esc($c['certificate_id']) ?>')">
+                                        <i class="fas fa-trash"></i> Delete
                                     </a>
-                                    <a href="<?= base_url('/certificate/delete/'.$c['certificate_id'])?>" style="color: #d63939; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 4px;" title="Delete" onclick="return confirm('Delete certificate #<?= esc($c['certificate_id']) ?>?')">
-                                        <i class="fa-solid fa-trash"></i> Delete
-                                    </a>
-                                </div>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="6">
-                            <div class="empty">
-                                <div class="empty-img">
-                                    <i class="fa-solid fa-file-medical text-muted" style="font-size: 48px;"></i>
-                                </div>
-                                <p class="empty-title">No Certificates</p>
-                                <p class="empty-subtitle">No medical certificates have been created yet.</p>
-                                <div class="empty-action">
-                                    <a href="/certificate/add" class="btn btn-primary">
-                                        <i class="fa-solid fa-plus"></i> Add First Certificate
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
+                        <td colspan="6" class="text-center text-muted py-4">No certificates found</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

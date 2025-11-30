@@ -112,7 +112,17 @@
 
                     <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Enter your password (min. 6 characters)" required minlength="6">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                        <small class="form-text text-muted d-block mt-2">
+                            <strong>Password must contain:</strong>
+                            <div id="password-requirements" style="margin-top: 0.5rem;">
+                                <div><span id="req-length" class="requirement-item">✗</span> At least 8 characters</div>
+                                <div><span id="req-uppercase" class="requirement-item">✗</span> At least one uppercase letter (A-Z)</div>
+                                <div><span id="req-lowercase" class="requirement-item">✗</span> At least one lowercase letter (a-z)</div>
+                                <div><span id="req-number" class="requirement-item">✗</span> At least one number (0-9)</div>
+                                <div><span id="req-special" class="requirement-item">✗</span> At least one special character (!@#$%^&*)</div>
+                            </div>
+                        </small>
                     </div>
 
                     <div class="mb-3">
@@ -147,5 +157,69 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Tabler JS -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    
+    <style>
+        .requirement-item {
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        .requirement-item.valid {
+            color: #28a745;
+        }
+        .requirement-item.invalid {
+            color: #dc3545;
+        }
+    </style>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const submitBtn = document.querySelector('button[type="submit"]');
+
+        // Password requirements checkers
+        const requirements = {
+            length: (pwd) => pwd.length >= 8,
+            uppercase: (pwd) => /[A-Z]/.test(pwd),
+            lowercase: (pwd) => /[a-z]/.test(pwd),
+            number: (pwd) => /[0-9]/.test(pwd),
+            special: (pwd) => /[!@#$%^&*()_+\-=\[\]{};:\'",.<>?\/\\|`~]/.test(pwd)
+        };
+
+        const requirementMap = {
+            'length': 'req-length',
+            'uppercase': 'req-uppercase',
+            'lowercase': 'req-lowercase',
+            'number': 'req-number',
+            'special': 'req-special'
+        };
+
+        function updatePasswordRequirements() {
+            const password = passwordInput.value;
+            let allMet = true;
+
+            for (const [key, func] of Object.entries(requirements)) {
+                const isMet = func(password);
+                const element = document.getElementById(requirementMap[key]);
+                
+                if (isMet) {
+                    element.classList.remove('invalid');
+                    element.classList.add('valid');
+                    element.textContent = '✓';
+                } else {
+                    element.classList.remove('valid');
+                    element.classList.add('invalid');
+                    element.textContent = '✗';
+                    allMet = false;
+                }
+            }
+
+            // Enable/disable submit button based on all requirements met
+            submitBtn.disabled = !allMet || !passwordInput.value;
+        }
+
+        passwordInput.addEventListener('input', updatePasswordRequirements);
+
+        // Initial state
+        updatePasswordRequirements();
+    </script>
 </body>
 </html>

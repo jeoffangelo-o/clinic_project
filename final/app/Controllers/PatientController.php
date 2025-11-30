@@ -18,11 +18,11 @@ class PatientController extends BaseController
         $patient = new PatientModel();
         $data['patient'] = [];
         $search = request()->getGet('search') ?? '';
-        $sort = request()->getGet('sort') ?? 'asc';
+        $sort = request()->getGet('sort') ?? 'desc';
         
         // Validate sort parameter
         if (!in_array($sort, ['asc', 'desc'])) {
-            $sort = 'asc';
+            $sort = 'desc';
         }
 
         // Student and Staff can only see their own patient record

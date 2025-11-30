@@ -17,23 +17,40 @@ class AnnouncementController extends BaseController
 
         $announce = new AnnouncementModel();
         $search = request()->getGet('search') ?? '';
-        $sort = request()->getGet('sort') ?? 'asc';
+        $sort = request()->getGet('sort') ?? 'desc';
         
         // Validate sort parameter
         if (!in_array($sort, ['asc', 'desc'])) {
-            $sort = 'asc';
+            $sort = 'desc';
         }
 
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        // Build base query with optional search filter
+        $query = $announce;
         if ($search) {
-            $data['announce'] = $announce
+            $query = $query->groupStart()
+                           ->like('title', $search)
+                           ->orLike('content', $search)
+                           ->groupEnd();
+        }
+
+        // Admin and nurse should see all announcements
+        if (session()->get('role') === 'admin' || session()->get('role') === 'nurse') {
+            $data['announce'] = $query->orderBy('announcement_id', $sort)->findAll();
+        } else {
+            // For regular users, show announcements that are already posted (posted_at <= now)
+            // and not expired (posted_until >= now) OR without an expiry (posted_until IS NULL).
+            $data['announce'] = $query
                 ->groupStart()
-                ->like('title', $search)
-                ->orLike('content', $search)
+                    ->where('posted_at <=', $currentDateTime)
+                    ->groupStart()
+                        ->where('posted_until >=', $currentDateTime)
+                        ->orWhere('posted_until IS NULL', null, false)
+                    ->groupEnd()
                 ->groupEnd()
                 ->orderBy('announcement_id', $sort)
                 ->findAll();
-        } else {
-            $data['announce'] = $announce->orderBy('announcement_id', $sort)->findAll();
         }
 
         return view('Announcement/announcement' , $data);

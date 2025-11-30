@@ -26,11 +26,11 @@ class ConsultationController extends BaseController
         $inventoryModel = new InventoryModel();
         $patientModel = new PatientModel();
         $search = request()->getGet('search') ?? '';
-        $sort = request()->getGet('sort') ?? 'asc';
+        $sort = request()->getGet('sort') ?? 'desc';
         
         // Validate sort parameter
         if (!in_array($sort, ['asc', 'desc'])) {
-            $sort = 'asc';
+            $sort = 'desc';
         }
 
         // Get consultations based on role
@@ -529,7 +529,7 @@ class ConsultationController extends BaseController
                 <!-- Footer -->
                 <div class="footer">
                     <div class="footer-logo">CSPC Clinic</div>
-                    <p>Professional Medical Services Center</p>
+                    <p>Medical Services</p>
                     <p style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0;">
                         © ' . date('Y') . ' CSPC Clinic. All rights reserved.
                     </p>
